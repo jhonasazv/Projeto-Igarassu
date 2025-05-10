@@ -14,6 +14,7 @@ type RegisterForm = {
     email: string;
     password: string;
     password_confirmation: string;
+    tipo: string;  // Added tipo field
 };
 
 export default function Register() {
@@ -22,12 +23,13 @@ export default function Register() {
         email: '',
         password: '',
         password_confirmation: '',
+        tipo: '',  // Initialize tipo field
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('register'), {
-            onFinish: () => reset('password', 'password_confirmation'),
+            onFinish: () => reset('password', 'password_confirmation', 'tipo'), // Reset tipo as well
         });
     };
 
@@ -101,7 +103,23 @@ export default function Register() {
                         <InputError message={errors.password_confirmation} />
                     </div>
 
-                    <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
+                    {/* New Textarea for "tipo" */}
+                    <div className="grid gap-2">
+                        <Label htmlFor="tipo">Tipo</Label>
+                        <Input
+                            id="tipo"
+                            type="text"
+                            required
+                            tabIndex={5}
+                            value={data.tipo}
+                            onChange={(e) => setData('tipo', e.target.value)}
+                            disabled={processing}
+                            placeholder="Enter tipo"
+                        />
+                        <InputError message={errors.tipo} />
+                    </div>
+
+                    <Button type="submit" className="mt-2 w-full" tabIndex={6} disabled={processing}>
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         Create account
                     </Button>
@@ -109,7 +127,7 @@ export default function Register() {
 
                 <div className="text-muted-foreground text-center text-sm">
                     Already have an account?{' '}
-                    <TextLink href={route('login')} tabIndex={6}>
+                    <TextLink href={route('login')} tabIndex={7}>
                         Log in
                     </TextLink>
                 </div>
