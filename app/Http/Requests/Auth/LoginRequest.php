@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Hash;
+
 
 class LoginRequest extends FormRequest
 {
@@ -41,12 +43,21 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $user = \App\Models\User::where('email', $this->input('email'))->first();
+
+        if (! $user || ! Hash::check($this->input('password'), $user->password)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
             ]);
+        }
+
+        //decide o tipo do usuario
+        if ($user->tipo == 'administrador') {
+            Auth::guard('admin')->login($user, $this->boolean('remember'));
+        } else {
+            Auth::guard('web')->login($user, $this->boolean('remember'));
         }
 
         RateLimiter::clear($this->throttleKey());
