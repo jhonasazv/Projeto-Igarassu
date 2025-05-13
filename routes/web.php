@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\assistenteController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\semLogincontroller;
 use Illuminate\Support\Facades\Route;
@@ -13,13 +14,17 @@ Route::get('/', function () {//////////////////rotas sem login
 Route::get('/agendamento', [semLogincontroller::class, 'mostrarAgenda'])->name('agendamento');
 
 Route::post('/agendamento', [semLogincontroller::class, 'agendaForm'])->name('agendamentoForm');
+
 //////////////////
 
 Route::middleware(['auth:web', 'verified'])->group(function () { // ROTAS ASSISTENTE
-    Route::get('dashboard', function () {
+    Route::get('/dashboard', function () {
          return Inertia::render('dashboard');
          
     })->name('dashboard');
+
+    //Route::get('/dashboard/teste', [assistenteController::class, 'mostrarSolicitantes'])->name('teste');//TESTE////////////////
+
 });
 
 Route::middleware(['auth:admin', 'verified'])->group(function () {  // ROTAS DE ADM
