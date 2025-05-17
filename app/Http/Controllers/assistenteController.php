@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Auth\Events\Validated;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class assistenteController extends Controller
 {
@@ -12,12 +13,24 @@ class assistenteController extends Controller
 
         //$solicitantes = DB::table('solicitantes')->orderBy('created_at')->get([]);
 
-        $solicitantes = DB::table('users')->orderBy('created_at')->get(['name', 'email']);
+        $solicitantes = DB::table('users')->orderBy('created_at')->get(['name', 'email']);//nao é [nome e email]
 
-        return response()->json($solicitantes);
+        return inertia::render('?', $solicitantes);
     }
 
-    public function solicitacaoForm(Request $request){
+    public function mostrarSolicitantesForm(){
+
+        /* $user = Auth::user();
+        $email = $user->email;
+
+        $assistenteId = DB::table('users')->where('email', $email)->get(['name', 'email']);
+
+        session('idAssistente', $assistenteId); */
+
+        return inertia::render('?');
+     }
+
+    public function solicitantesForm(Request $request){
 
         $request->validate([
             'nis' => 'required|string|max:150|unique',
@@ -36,5 +49,42 @@ class assistenteController extends Controller
             'endereco' => $request->endereco,
             'cep' => $request->cep,
         ]);
+    }
+
+    public function mostrarSolicitacao(){
+
+        $solicitacoes = DB::table('users')->orderBy('created_at')->get(['name', 'email']);//nao é [nome e email]
+
+        return inertia::render('?', $solicitacoes);
+    }
+
+    public function mostrarSolicitacaoForm(){
+
+        return inertia::render('?');
+    }
+
+    public function solicitacaoForm(Request $request){
+        
+        $request->validate([
+            'descricao' => 'required|string|max:150',
+        ]);
+
+        DB::table('solicitacao')->insert([
+            'texto' => $request->descricao
+        ]);
+    }
+
+    public function umSolicitante($id){
+
+        $dataSolicitante = DB::table('solicitantes')->where('id', $id)->get(['name', 'email']);
+
+        return inertia::render('?', $dataSolicitante);
+    }
+
+    public function umaSolicitacao($id){
+
+        $dataSolicitacao = DB::table('solicitacoes')->where('id', $id)->get(['name', 'email']);
+
+        return inertia::render('?', $dataSolicitacao);
     }
 }

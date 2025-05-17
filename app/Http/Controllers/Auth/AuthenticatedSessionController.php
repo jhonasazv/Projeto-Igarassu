@@ -33,13 +33,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-          
 
-        /* return match ($user->tipo) {
-        'administrador' => redirect('/admin-dashboard'),
-        'assistente'  => redirect('/dashboard'),
-        default => redirect('/'),
-        }; */
         if (Auth::guard('admin')->check()) {
 
             return Inertia::location(route('admindashboard'));

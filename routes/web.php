@@ -18,10 +18,30 @@ Route::post('/agendamento', [semLogincontroller::class, 'agendaForm'])->name('ag
 //////////////////
 
 Route::middleware(['auth:web', 'verified'])->group(function () { // ROTAS ASSISTENTE
-    Route::get('/dashboard', function () {
+    Route::get('/dashboard', function () {// ROTA TESTE
          return Inertia::render('dashboard');
-         
     })->name('dashboard');
+
+
+    Route::get('/dashboard/beneficiarios', [assistenteController::class, 'mostrarSolicitantes'])->name('beneficiarios');
+
+
+    Route::get('/dashboard/beneficiarios/cadastrar-beneficiario', [assistenteController::class, 'mostrarSolicitantesForm'])->name('cadastrarBeneficiarioGet');
+
+    Route::post('/dashboard/beneficiarios/cadastrar-beneficiario', [assistenteController::class, 'solicitantesForm'])->name('cadastrarBeneficiarioPost');
+
+
+    Route::get('/dashboard/solicitacoes', [assistenteController::class, 'mostrarSolicitacao'])->name('solicitacoes');
+
+
+    Route::get('/dashboard/solicitacoes/criar-solicitacao', [assistenteController::class, 'mostrarSolicitacaoForm'])->name('criarSolicitacaoGet');
+
+    Route::post('/dashboard/solicitacoes/criar-solicitacao', [assistenteController::class, 'solicitacaoForm'])->name('criarSolicitacaoPost');
+
+
+    Route::get('/dashboard/beneficiarios/{id}', [assistenteController::class, 'umSolicitante'])->name('beneficiarioPage');
+
+    Route::get('/dashboard/solicitacoes/{id}', [assistenteController::class, 'umaSolicitacao'])->name('solicitacaoPage');
 
     //Route::get('/dashboard/teste', [assistenteController::class, 'mostrarSolicitantes'])->name('teste');//TESTE////////////////
 
