@@ -13,9 +13,9 @@ class assistenteController extends Controller
 
         //$solicitantes = DB::table('solicitantes')->orderBy('created_at')->get([]);
 
-        $solicitantes = DB::table('users')->orderBy('created_at')->get(['name', 'email']);//nao é [nome e email]
+        $solicitantes = DB::table('solicitantes')->orderBy('created_at')->get(['nome', 'cpf', 'sexo', 'nis', 'cep']);//nao é [nome e email]
 
-        return inertia::render('?', $solicitantes);
+        return inertia::render('?', ['solicitantes' => $solicitantes]);
     }
 
     public function mostrarSolicitantesForm(){
@@ -53,9 +53,11 @@ class assistenteController extends Controller
 
     public function mostrarSolicitacao(){
 
-        $solicitacoes = DB::table('users')->orderBy('created_at')->get(['name', 'email']);//nao é [nome e email]
+        $solicitante = DB::table('solicitantes')->orderBy('created_at', 'desc')->get('nome');
 
-        return inertia::render('?', $solicitacoes);
+        $solicitacoes = DB::table('solicitacoes')->orderBy('created_at', 'desc')->get(['id', 'resultado', 'data_solicitacao']);
+
+        return inertia::render('?', ['solicitante' => $solicitante, 'solicitacoes', $solicitacoes]);
     }
 
     public function mostrarSolicitacaoForm(){
@@ -74,17 +76,31 @@ class assistenteController extends Controller
         ]);
     }
 
-    public function umSolicitante($id){
+    public function umSolicitante($id){////////Nao sei se tem////////
 
-        $dataSolicitante = DB::table('solicitantes')->where('id', $id)->get(['name', 'email']);
+        $solicitante = DB::table('solicitantes')->where('id', $id)->first(['nome', 'email']);
 
-        return inertia::render('?', $dataSolicitante);
+        if(!$solicitante){
+
+            return redirect()->abort(404);
+        }
+
+        return inertia::render('?', ['solicitante' => $solicitante]);
     }
 
     public function umaSolicitacao($id){
 
-        $dataSolicitacao = DB::table('solicitacoes')->where('id', $id)->get(['name', 'email']);
+        $solicitacao = DB::table('solicitacoes')->where('id', $id)->first(['data_solicitacao', 'data_deferido', 'resultado', 'texto', 'id', 'usuario_id']);
 
-        return inertia::render('?', $dataSolicitacao);
+        $assistente = DB::table('user')->where('id', $solicitacao->usuario_id)->first(['nome']);/////////ver se ta certo
+
+        //$solicitante = DB::table('solicitantes')->where('id', $dataSolicitacao->usuario_id)->first(['id']);
+
+        if(!$solicitacao){
+
+            return redirect()->abort(404);
+        }
+
+        return inertia::render('?', ['solicitacao' => $solicitacao, 'assistente' => $assistente]);
     }
 }
