@@ -33,11 +33,11 @@ class assistenteController extends Controller
     public function solicitantesForm(Request $request){
 
         $request->validate([
-            'nis' => 'required|string|max:150|unique',
-            'cpf' => 'required|string|max:20|unique',
+            'nis' => 'required|string|max:11|unique',
+            'cpf' => 'required|string|max:11|unique',
             'nome' => 'required|string|max:100',
             'sexo' => 'required|string|max:1',
-            'endereco' => 'required|string|max:50',
+            'endereco' => 'required|string|max:150',
             'cep' => 'required|string|max:8',
         ]);
 
@@ -68,7 +68,7 @@ class assistenteController extends Controller
     public function solicitacaoForm(Request $request){
         
         $request->validate([
-            'descricao' => 'required|string|max:150',
+            'descricao' => 'required|string|max:320',
         ]);
 
         DB::table('solicitacao')->insert([
