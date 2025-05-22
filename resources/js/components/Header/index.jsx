@@ -1,36 +1,30 @@
 import styles from "./styles.module.css";
-import { NavLink } from "react-router-dom";
-import { HandleSetFormType } from "../../manager"; // Os tipos de form estao aqui
-import { useNavigate } from "react-router-dom";
+import { Link } from "@inertiajs/inertia-react"; // 
+import { HandleSetFormType } from "../../manager";
 
 import Img from "../../assets/logo igarassu.svg";
 import Img2 from "../../assets/BAckArrow.svg";
 
 export default function Header({ type }) {
-    const navigate = useNavigate();
     return (
         <div className={styles.Container}>
             <img
                 src={Img}
                 onClick={() => {
-                    navigate("/");
+                    window.location.href = "/"; // Simples redirecionamento para a raiz
                 }}
                 alt=""
             />
             {!type ? (
-                <NavLink to="/form" style={{ textDecoration: "none" }}>
-                    <button
-                        onClick={() => {
-                            HandleSetFormType("agendamento");
-                        }}
-                    >
+                <Link href="/form" style={{ textDecoration: "none" }} onClick={() => HandleSetFormType("agendamento")}>
+                    <button>
                         <h6>Agendar uma visita</h6>
                     </button>
-                </NavLink>
+                </Link>
             ) : (
                 <button
                     onClick={() => {
-                        navigate(-1);
+                        window.history.back(); //
                     }}
                 >
                     <img src={Img2} alt="" />

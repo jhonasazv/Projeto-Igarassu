@@ -1,14 +1,13 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "@inertiajs/inertia-react"; // aqui substitui useNavigate e NavLink
 import styles from "./styles.module.css";
 import { HandleLogin } from "../../manager";
 
-function LoginForm() {
-    const [ajuda, setAjuda] = useState(false); // 
+function LoginForm({ setError }) { // Adicionei setError como prop para compatibilidade com HandleLogin
+    const [ajuda, setAjuda] = useState(false);
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
-    const [error, setError] = useState("");
-    const navigate = useNavigate();
+    const [error, setLocalError] = useState(""); // renomeei para evitar conflito
 
     const HandleChangeEmail = (event) => {
         setEmail(event.target.value);
@@ -18,13 +17,14 @@ function LoginForm() {
         setSenha(event.target.value);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault(); // 
         if (!email || !senha) {
-            setError("Por favor, preencha email e senha.");
+            setLocalError("Por favor, preencha email e senha.");
             return;
         }
-        setError("");
-        HandleLogin(email, senha, navigate, setError); // Passar o setError
+        setLocalError("");
+        HandleLogin(email, senha, () => {}, setError || setLocalError); // Passa setError como prop ou local
     };
 
     return (

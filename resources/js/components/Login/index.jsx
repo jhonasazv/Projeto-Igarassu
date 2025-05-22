@@ -1,54 +1,22 @@
 import styles from "./styles.module.css";
-import { NavLink } from "react-router-dom";
+import { Link } from "@inertiajs/inertia-react"; // Substitui NavLink
 import { HandleSetFormType } from "../../manager";
 
-import Img1 from "../../assets/Voluntario.png";
-import Img2 from "../../assets/Cesta.png";
+import HeroImg from "../../assets/Hero.png";
 
 export default function Login() {
     return (
-        <div className={styles.Container}>
-            <div className={styles.box}>
-                <img src={Img1} alt="" />
-                <NavLink
-                    to="/form"
-                    style={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "center",
-                        textDecoration: "none",
-                    }}
-                >
-                    <button
-                        onClick={() => {
-                            HandleSetFormType("login");
-                        }}
-                    >
-                        Sou Assistente
-                    </button>
-                </NavLink>
-            </div>
-
-            <div className={styles.box}>
-                <img src={Img2} alt="" />
-                <NavLink
-                    to="/form"
-                    style={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "center",
-                        textDecoration: "none",
-                    }}
-                >
-                    <button
-                        onClick={() => {
-                            HandleSetFormType("agendamento");
-                        }}
-                    >
-                        Sou Beneficiario
-                    </button>
-                </NavLink>
-            </div>
+        <div
+            className={styles.Container}
+            style={{ backgroundImage: `url(${HeroImg})` }}
+        >
+            <h1>Apoio para quem mais precisa!</h1>
+            <h3>Solicite a visita de um Assistente Social na sua residência</h3>
+            <Link href="/form" onClick={() => HandleSetFormType("agendamento")}>
+                <button>
+                    <h6>Solicitar Assistente</h6>
+                </button>
+            </Link>
         </div>
     );
 }

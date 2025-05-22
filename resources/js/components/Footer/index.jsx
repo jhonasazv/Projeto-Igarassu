@@ -1,5 +1,4 @@
 import styles from "./styles.module.css";
-
 import Img1 from "../../assets/Telefone.svg";
 import Img2 from "../../assets/Email.svg";
 import Img3 from "../../assets/Instagram.svg";

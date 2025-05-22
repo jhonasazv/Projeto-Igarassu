@@ -21,4 +21,18 @@ export default defineConfig({
             'ziggy-js': resolve(__dirname, 'vendor/tightenco/ziggy'),
         },
     },
+    build: {
+        rollupOptions: {
+            output: {
+                assetFileNames: (assetInfo) => {
+                    // Verifica se assetInfo e assetInfo.name estão definidos
+                    if (assetInfo?.name && assetInfo.name.match(/\.(png|jpe?g|svg|gif|ico)$/)) {
+                        return 'assets/[name].[hash][extname]';
+                    }
+                    // Caso padrão para outros assets
+                    return '[name].[hash][extname]';
+                },
+            },
+        },
+    },
 });

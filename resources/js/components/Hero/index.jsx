@@ -1,6 +1,6 @@
 import styles from "./styles.module.css";
-import { NavLink } from "react-router-dom";
-import { HandleSetFormType } from "../../manager"; // Os tipos de form estao aqui
+import { Link } from "@inertiajs/inertia-react"; // 
+import { HandleSetFormType } from "../../manager";
 
 import HeroImg from "../../assets/Hero.png";
 
@@ -12,15 +12,11 @@ export default function Hero() {
         >
             <h1>Apoio para quem mais precisa!</h1>
             <h3>Solicite a visita de um Assistente Social na sua residência</h3>
-            <NavLink to="/form">
-                <button
-                    onClick={() => {
-                        HandleSetFormType("agendamento");
-                    }}
-                >
+            <Link href="/form" onClick={() => HandleSetFormType("agendamento")}>
+                <button>
                     <h6>Solicitar Assistente</h6>
                 </button>
-            </NavLink>
+            </Link>
         </div>
     );
 }
