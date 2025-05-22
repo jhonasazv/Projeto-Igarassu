@@ -43,7 +43,7 @@ class administradorController extends Controller
 
         $solicitacao = DB::table('solicitacoes')->where('id', $id)->first(['data_solicitacao', 'data_deferido', 'resultado', 'texto', 'id', 'usuario_id']);
 
-        $assistente = DB::table('user')->where('id', $solicitacao->usuario_id)->first(['nome']);
+        $assistente = DB::table('users')->where('id', $solicitacao->usuario_id)->first(['nome']);
 
         if(!$solicitacao){
 
@@ -83,7 +83,7 @@ class administradorController extends Controller
 
         $solicitacoes = DB::table('solicitacoes')->orderBy('created_at', 'desc')->get(['id', 'resultado', 'data_solicitacao']);
 
-        $assistente = DB::table('user')->orderBy('created_at', 'desc')->get('nome');
+        $assistente = DB::table('users')->orderBy('created_at', 'desc')->get('nome');
 
         inertia::render('?', ['solicitacoes' => $solicitacoes, 'assistente' => $assistente]);
     }
@@ -92,7 +92,7 @@ class administradorController extends Controller
 
         $solicitacao = DB::table('solicitacoes')->where('id', $id)->first(['data_solicitacao', 'data_deferido', 'resultado', 'texto', 'id', 'usuario_id']);
 
-        $assistente = DB::table('user')->where('id', $solicitacao->usuario_id)->first(['nome']);
+        $assistente = DB::table('users')->where('id', $solicitacao->usuario_id)->first(['nome']);
 
         if(!$solicitacao){
 

@@ -92,7 +92,7 @@ class assistenteController extends Controller
 
         $solicitacao = DB::table('solicitacoes')->where('id', $id)->first(['data_solicitacao', 'data_deferido', 'resultado', 'texto', 'id', 'usuario_id']);
 
-        $assistente = DB::table('user')->where('id', $solicitacao->usuario_id)->first(['nome']);/////////ver se ta certo
+        $assistente = DB::table('users')->where('id', $solicitacao->usuario_id)->first(['nome']);/////////ver se ta certo
 
         //$solicitante = DB::table('solicitantes')->where('id', $dataSolicitacao->usuario_id)->first(['id']);
 
