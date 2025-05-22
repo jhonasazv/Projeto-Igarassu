@@ -1,0 +1,28 @@
+.Container {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  width: 87%; /* Ajusta a largura para o contêiner pai */
+  aspect-ratio: 16/9;
+  margin: 0 auto;
+
+  display: flex;
+  justify-content: center;
+  padding-left: 6rem;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.Container h1 {
+  color: var(--color-white-300);
+  font-family: "Fredoka", sans-serif;
+  font-size: 5rem;
+  max-width: 30rem;
+}
+
+.Container h3 {
+  color: var(--color-white-300);
+  font-size: 1.5rem;
+  max-width: 20rem;
+}

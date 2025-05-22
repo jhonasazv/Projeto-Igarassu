@@ -9,7 +9,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {//////////////////rotas sem login
-    return Inertia::render('welcome');
+    return Inertia::render('Home/index.jsx');
 })->name('home');
 
 Route::get('/agendamento', [semLogincontroller::class, 'mostrarAgenda'])->name('agendamento');

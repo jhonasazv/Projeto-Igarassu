@@ -1,0 +1,30 @@
+.Container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 1rem 5rem;
+}
+
+.Container button {
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.Container img {
+    height: 5.5rem;
+}
+
+.Container button img {
+    height: 1rem;
+}
+
+.Container button h6 {
+    text-decoration: none !important;
+    border: none;
+}

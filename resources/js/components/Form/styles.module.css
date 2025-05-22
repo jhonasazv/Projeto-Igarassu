@@ -1,0 +1,85 @@
+.Container {
+    width: 100%;
+    padding-top: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    flex-direction: column;
+    border-top: solid var(--color-green-400) 1px;
+}
+
+.Container .content {
+    background-color: var(--color-green-100);
+    padding: 4rem 9.125rem 6rem;
+    border-radius: 74px;
+    border: 2px solid var(--color-green-400);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    transition: 0.5s;
+    flex-direction: column;
+}
+
+.Container .content .line {
+    width: 100%;
+    border-bottom: 2px solid var(--color-green-200);
+    margin-bottom: 1rem;
+}
+
+.Container .content h1 {
+    color: var(--color-green-400);
+}
+
+.Container .content h4 {
+    color: var(--color-green-500);
+}
+
+.Container .content h6 {
+    font-size: 1rem;
+    margin: -0.5rem 0;
+    font-weight: 400;
+}
+
+.Container .content p {
+    width: 392px;
+    font-size: 1.25rem;
+    text-align: center;
+}
+
+.Container .content input[type="email"],
+.Container .content input[type="password"] {
+    background-color: var(--color-white-300);
+    border: none;
+    border-radius: 80px;
+    outline: none;
+    padding: 1rem 1.5rem;
+    width: 100%;
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--color-black-300);
+}
+
+.Container .content input[type="submit"] {
+    background-color: var(--color-green-300);
+    border: none;
+    border-radius: 80px;
+    outline: none;
+    padding: 1rem 1.5rem;
+    width: 100%;
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--color-white-300);
+}
+
+.Container .content input:focus {
+    outline: solid var(--color-green-300) 2px;
+}
+
+.Container h2 {
+    color: var(--color-green-400);
+    font-weight: 400;
+    opacity: 0.6;
+    cursor: pointer;
+}
