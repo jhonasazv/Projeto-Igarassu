@@ -6,7 +6,7 @@ use Illuminate\Auth\Events\Validated;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 
-class semLogincontroller extends Controller
+class AgendamentoController extends Controller
 {
     public function mostrarAgenda(){
 
