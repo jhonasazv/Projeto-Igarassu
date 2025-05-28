@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Agendamento;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Auth\Events\Validated;
 use Inertia\Inertia;
@@ -15,13 +17,11 @@ class AgendamentoController extends Controller
 
     public function agendaForm(Request $request){
 
-        $request->validate([
+        $valido = $request->validate([
             'descricao' => 'required|string|max:150',
             //'situacao' => 'required|string|max:15|in:deferido,indeferido'
         ]);
 
-        DB::tables('agendamento')->insert([
-            'descricao' => $request->descricao,
-        ]);
+        Agendamento::create($valido);
     }
 }

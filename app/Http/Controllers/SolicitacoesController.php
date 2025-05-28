@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Solicitacao;
+use App\Models\Solicitante;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Auth\Events\Validated;
@@ -12,9 +14,13 @@ class SolicitacoesController extends Controller
 {
     public function mostrarSolicitacao(){
 
-        $solicitante = DB::table('solicitantes')->orderBy('created_at', 'desc')->get('nome');
+        //$solicitante = DB::table('solicitantes')->orderBy('created_at', 'desc')->get('nome');
 
-        $solicitacoes = DB::table('solicitacoes')->orderBy('created_at', 'desc')->get(['id', 'resultado', 'data_solicitacao']);
+        $solicitante = Solicitante::orderBy('created_at', 'asc')->get();
+
+        //$solicitacoes = DB::table('solicitacoes')->orderBy('created_at', 'desc')->get(['id', 'resultado', 'data_solicitacao']);
+
+        $solicitacoes = Solicitacao::orderBy('created_at', 'asc')->get();
 
         return inertia::render('?', ['solicitante' => $solicitante, 'solicitacoes', $solicitacoes]);
     }
@@ -30,23 +36,24 @@ class SolicitacoesController extends Controller
             'descricao' => 'required|string|max:320',
         ]);
 
-        DB::table('solicitacao')->insert([
-            'texto' => $request->descricao
+        Solicitacao::create([
+            'texto' => $request->descricao//!!!!!!!!
         ]);
+
+        /*DB::table('solicitacao')->insert([
+            'texto' => $request->descricao
+        ]);*/
     }
 
     public function umaSolicitacao($id){
 
-        $solicitacao = DB::table('solicitacoes')->where('id', $id)->first(['data_solicitacao', 'data_deferido', 'resultado', 'texto', 'id', 'usuario_id']);
+        //$solicitacao = DB::table('solicitacoes')->where('id', $id)->first(['data_solicitacao', 'data_deferido', 'resultado', 'texto', 'id', 'usuario_id']);
 
-        $assistente = DB::table('users')->where('id', $solicitacao->usuario_id)->first(['nome']);/////////ver se ta certo
+        $solicitacao = Solicitacao::findOrFail($id);
 
-        //$solicitante = DB::table('solicitantes')->where('id', $dataSolicitacao->usuario_id)->first(['id']);
+        //$assistente = DB::table('users')->where('id', $solicitacao->usuario_id)->first(['nome']);/////////ver se ta certo
 
-        if(!$solicitacao){
-
-            return redirect()->abort(404);
-        }
+        $assistente = Solicitacao::findOrFail($id)->user;
 
         return inertia::render('?', ['solicitacao' => $solicitacao, 'assistente' => $assistente]);
     }

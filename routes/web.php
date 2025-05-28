@@ -6,9 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\EntregasController;
 use App\Http\Controllers\SolicitacoesController;
 use App\Http\Controllers\SolicitantesController;
+use App\Models\Solicitacao;
+use App\Models\Solicitante;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 Route::get('/', function () {//////////////////rotas sem login
     return Inertia::render('welcome');
@@ -17,6 +21,41 @@ Route::get('/', function () {//////////////////rotas sem login
 Route::get('/agendamento', [AgendamentoController::class, 'mostrarAgenda'])->name('agendamento');
 
 Route::post('/agendamento', [AgendamentoController::class, 'agendaForm'])->name('agendamentoForm');
+
+Route::get('/teste/{id}', function ($id) {
+    
+    //$teste = Solicitacao::create(['texto' => 'pastel meio meh']);
+    $user = User::findOrFail($id);
+
+   return view('teste', ['user' => $user]);
+});
+
+Route::patch('/teste/{id}', function (Request $request, $id) {
+    
+        $user = Solicitacao::findOrFail($id);
+
+        $request->validate([
+            'email' => 'nullable|string|max:150',
+            'name' => 'nullable|string|max:150',
+            'usuario_id' => 'nullable|integer|max:150'
+        ]);
+
+        if(!$request->email == null){
+            $user->email = $request->email;
+        }
+
+        if(!$request->name == null){
+            $user->name = $request->name;
+        }
+
+        if(!$request->usuario_id == null){
+            $user->usuario_id = $request->usuario_id;
+        }
+
+            $user->save();
+        return $user->email;
+   
+})->name('test');
 
 //////////////////
 
@@ -59,7 +98,7 @@ Route::middleware(['auth:admin'])->group(function () {  // ROTAS DE ADM
 
     Route::get('/admin-dashboard/solicitacoes-pendentes/{id}', [AnaliseController::class, 'mostrarAnalise'])->name('umaAnalise');
 
-    Route::post('/admin-dashboard/solicitacoes-pendentes/{id}', [AnaliseController::class, 'analiseForm'])->name('umaAnaliseForm');
+    Route::patch('/admin-dashboard/solicitacoes-pendentes/{id}', [AnaliseController::class, 'analiseForm'])->name('umaAnaliseForm');
 
 
 
@@ -67,7 +106,7 @@ Route::middleware(['auth:admin'])->group(function () {  // ROTAS DE ADM
 
     Route::get('/admin-dashboard/entregas/{id}', [EntregasController::class, 'umaEntrega'])->name('umaEntrega');
 
-    Route::post('/admin-dashboard/entregas/{id}', [EntregasController::class, 'umaEntregaAutorizar'])->name('autorizarEntrega');
+    Route::patch('/admin-dashboard/entregas/{id}', [EntregasController::class, 'umaEntregaAutorizar'])->name('autorizarEntrega');
 
     Route::get('/admin-dashboard/entregas/{id}/organizar-entrega', [EntregasController::class, 'mostrarCadastroEntrega'])->name('organizarEntrega');
 
