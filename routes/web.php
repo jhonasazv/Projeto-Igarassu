@@ -37,10 +37,15 @@ Route::patch('/teste/{id}', function (Request $request, $id) {
         $request->validate([
             'email' => 'nullable|string|max:150',
             'name' => 'nullable|string|max:150',
-            'usuario_id' => 'nullable|integer|max:150'
+            'usuario_id' => 'nullable|integer|size:4'
         ]);
 
-        if(!$request->email == null){
+        $ser2 = User::find($request->usuario_id);
+        if ($request->usuario_id) {
+            return 'p7orraraa';
+        }
+
+        if($request->email){
             $user->email = $request->email;
         }
 
@@ -48,12 +53,10 @@ Route::patch('/teste/{id}', function (Request $request, $id) {
             $user->name = $request->name;
         }
 
-        if(!$request->usuario_id == null){
-            $user->usuario_id = $request->usuario_id;
-        }
+        
 
             $user->save();
-        return $user->email;
+        return $ser2->email;
    
 })->name('test');
 

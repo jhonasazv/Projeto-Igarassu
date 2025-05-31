@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Solicitante;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Auth\Events\Validated;
 use Inertia\Inertia;
@@ -34,12 +35,12 @@ class SolicitantesController extends Controller
     public function solicitantesForm(Request $request){
 
        $validos = $request->validate([
-            'nis' => 'required|string|max:11|unique',
-            'cpf' => 'required|string|max:11|unique',
+            'nis' => 'required|string|size:11|unique',
+            'cpf' => 'required|string|size:11|unique',
             'nome' => 'required|string|max:100',
-            'sexo' => 'required|string|max:1',
+            'sexo' => 'required|string|size:1',
             'endereco' => 'required|string|max:150',
-            'cep' => 'required|string|max:8',
+            'cep' => 'required|string|size:8',
         ]);
 
         Solicitante::create($validos);
@@ -65,16 +66,26 @@ class SolicitantesController extends Controller
 
     public function updateSolicitante(Request $request, $id){
 
-        $validos = $request->validate([
-            'nis' => 'required|string|max:11|unique',
-            'cpf' => 'required|string|max:11|unique',
-            'nome' => 'required|string|max:100',
-            'sexo' => 'required|string|max:1',
-            'endereco' => 'required|string|max:150',
-            'cep' => 'required|string|max:8',
+        $request->validate([
+            'nis' => 'nullable|string|size:11|unique',
+            'cpf' => 'nullable|string|size:11|unique',
+            'nome' => 'nullable|string|max:100',
+            'sexo' => 'nullable|string|max:1',
+            'endereco' => 'nullable|string|max:150',
+            'cep' => 'nullable|string|size:8',
+            'usuario_id' => 'nullable|integer|min:1'
         ]);
 
         $solicitante = Solicitante::findOrFail($id);
+
+        $user = User::find($request->usuario_id);
+
+        if (!$user and $request->usuario_id) {
+            
+            return redirect()->back()->with('erro', 'não existe esse usuario no sistema');
+        }
+
+        
 
         if(!$request->nis == null){
             $solicitante->nis = $request->nis;
@@ -99,6 +110,20 @@ class SolicitantesController extends Controller
         if(!$request->cep == null){
             $solicitante->cep = $request->cep;
         }
+
+        if(!$request->usuario_id == null){
+            $solicitante->usuario_id = $request->usuario_id;
+        }
             $solicitante->save();
+    }
+
+    public function deleteSolicitantes(Request $request, $id){
+
+        $botao = $request->input('submit');
+
+        if($botao){
+            Solicitante::destroy($id);
+        }
+        return redirect()->back();
     }
 }

@@ -76,14 +76,14 @@ class EntregasController extends Controller
     public function cadastroEntrega(Request $request){//TESTAR
 
         $request->validate([
-            'nome' => 'string|required|max:100',
-            'descricao' => 'string|required|max:100',
-            'valor' => 'numeric|required|min:0',
-            'quantidade' => 'integer|required|max:20',
+            'nome' => 'required|string|max:100',
+            'descricao' => 'required|string|max:100',
+            'valor' => 'required|numeric|min:0',
+            'quantidade' => 'required|integer|max:20',
             
-            'numero' => 'integer|required|min:0',
-            'data_entrega' => 'date|required',
-            'descricao' => 'string|required|max:150',
+            'numero' => 'required|integer|min:0',
+            'data_entrega' => 'required|date',
+            'descricao' => 'required|string|max:150',
         ]);
  
         auxilio::create([
@@ -113,48 +113,56 @@ class EntregasController extends Controller
         ]);*/
     }
 
-    /*public function mostrarCadastroAuxilio(){
-
-        inertia::render('?');
-    }
-
-    public function cadastroAuxilio(Request $request){//////////TALVEZ SEJA REDUZIDO A UM SO
+    public function updateEntrega(Request $request, $id){
 
         $request->validate([
-            'nome' => 'string|required|max:100',
-            'descricao' => 'string|required|max:100',
-            'valor' => 'numeric|required|min:0',
-            'quantidade' => 'integer|required|max:20'
+            'numero' => 'nullable|integer|min:0',
+            'data_entrega' => 'nullable|date',
+            'descricao' => 'nullable|string|max:150',
+            'situacao' => 'nullable|integer',
+            'solicitacao_id' => 'nullable|integer|min:1'
         ]);
 
-        DB::tables('auxilios')->insert([
-            'nome' => $request->nome,
-            'descricao' => $request->descricao,
-            'valor' => $request->valor,
-            'quantidade' => $request->quantidade,
-        ]);
+        $entrega = Entrega::findOrFail($id);
+
+        $solicitacao = Solicitacao::find($request->usuario_id);
+
+        if (!$solicitacao and $request->solicitacao_id) {
+            
+            return redirect()->back()->with('erro', 'não existe essa solicitacao no sistema');
+        }
+
+
+
+        if(!$request->numero == null){
+            $entrega->numero = $request->numero;
+        }
+
+        if(!$request->data_entrega == null){
+            $entrega->data_entrega = $request->data_entrega;
+        }
+
+        if(!$request->descricao == null){
+            $entrega->descricao = $request->descricao;
+        }
+
+        if(!$request->situacao == null){
+            $entrega->situacao = $request->situacao;
+        }
+
+        if(!$request->solicitacao_id == null){
+            $entrega->solicitacao_id = $request->solicitacao_id;
+        }
     }
 
-    public function mostrarCadastroEntrega(){
+    public function deleteEntrega(Request $request, $id){
 
-        inertia::render('?');
+        $botao = $request->input('submit');
+
+        if($botao){
+            Entrega::destroy($id);
+        }
+        return redirect()->back();
     }
 
-    public function cadastroEntrega(Request $request){//////////TALVEZ SEJA REDUZIDO A UM SO
-
-        $request->validate([
-            'numero' => 'integer|required|min:0',
-            'data_entrega' => 'date|required',
-            'descricao' => 'string|required|max:150',
-            'situacao' => 'integer|required'//////Enum talvez
-        ]);
-
-        DB::tables('entregas')->insert([
-            'numero' => $request->numero,
-            'data_entrega' => $request->data_entrega,
-            'descricao' => $request->descricao,
-            'situacao' => $request->situacao,
-        ]);
-    }*/
-
-}
+}    
