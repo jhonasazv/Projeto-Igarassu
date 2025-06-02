@@ -3,15 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use SoftDeletes;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class auxilio extends Model
+class Auxilio extends Model
 {
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
+
+    use SoftDeletes;
 
     protected $fillable = [
         'nome',

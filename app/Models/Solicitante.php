@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Solicitante extends Model
 {
@@ -14,6 +15,8 @@ class Solicitante extends Model
      *
      * @var list<string>
      */
+
+    use SoftDeletes;
 
     protected $fillable = [
         'nis',
@@ -27,5 +30,10 @@ class Solicitante extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'usuario_id');
+    }
+
+    public function solicitacoes(): HasMany{
+
+       return $this->HasMany(solicitacao::class);
     }
 }

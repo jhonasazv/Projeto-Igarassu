@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use SoftDeletes;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Agendamento extends Model
 {
@@ -13,6 +13,8 @@ class Agendamento extends Model
      *
      * @var list<string>
      */
+
+    use SoftDeletes;
 
     protected $fillable = [
         'data_agendamento',

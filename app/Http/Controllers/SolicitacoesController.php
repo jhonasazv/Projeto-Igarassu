@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Auxilio;
+use App\Models\Entrega;
 use App\Models\Solicitacao;
 use App\Models\Solicitante;
 use App\Models\User;
@@ -34,16 +36,24 @@ class SolicitacoesController extends Controller
     public function solicitacaoForm(Request $request){
         
         $request->validate([
+            'texto' => 'required|string|max:320',
+
+            'nome' => 'required|string|max:100',
             'descricao' => 'required|string|max:320',
+            'valor' => 'required|numeric|min:0',
+            'quantidade' => 'required|integer',
         ]);
 
         Solicitacao::create([
-            'texto' => $request->descricao//!!!!!!!!
+            'texto' => $request->texto//!!!!!!!!
         ]);
-
-        /*DB::table('solicitacao')->insert([
-            'texto' => $request->descricao
-        ]);*/
+        
+        Solicitacao::create([
+            'nome' => $request->nome,
+            'descricao' => $request->descricao,
+            'valor' => $request->valor,
+            'quantidade' => $request->quantidade,
+        ]);
     }
 
     public function umaSolicitacao($id){
@@ -67,40 +77,68 @@ class SolicitacoesController extends Controller
             'resultado' => 'nullable|boolean',
             'texto' => 'nullable|string|max:320',
             'usuario_id' => 'nullable|integer|min:1',
+            'auxilio_id' => 'nullable|integer|min:1',
+
+            'nome' => 'nullable|string|max:100',
+            'descricao' => 'nullable|string|max:100',
+            'valor' => 'nullable|numeric|min:0',
+            'quantidade' => 'nullable|integer',
         ]);
 
-        $solicitacao = Solicitante::findOrFail($id);
+        $solicitacao = Solicitacao::findOrFail($id);
 
-        $user = User::find($request->usuario_id);
+        $auxilio = Solicitacao::findOrFail($id)->auxilio;
 
-        if (!$user and $request->usuario_id) {
+        $userFK = User::find($request->usuario_id);
+        $auxilioFK = Auxilio::find($request->auxilio_id);
+
+        if (!$userFK and $request->usuario_id) {
             
             return redirect()->back()->with('erro', 'não existe esse usuario no sistema');
         }
 
+        if (!$auxilioFK and $request->auxilio_id) {
+            
+            return redirect()->back()->with('erro', 'não existe o ID desse auxilio no sistema');
+        }
+        
 
 
         if(!$request->data_solicitacao == null){
             $solicitacao->data_solicitacao = $request->data_solicitacao;
         }
-
         if(!$request->data_deferido == null){
             $solicitacao->data_deferido = $request->data_deferido;
         }
-
         if(!$request->resultado == null){
             $solicitacao->resultado = $request->resultado;
         }
-
         if(!$request->texto == null){
             $solicitacao->texto = $request->texto;
         }
-
         if(!$request->usuario_id == null){
             $solicitacao->usuario_id = $request->usuario_id;
         }
+        if(!$request->auxilio_id == null){
+            $solicitacao->auxilio_id = $request->auxilio_id;
+        }
+
+
+        if(!$request->nome == null){
+            $auxilio->nome = $request->nome;
+        }
+        if(!$request->descricao == null){
+            $auxilio->descricao = $request->descricao;
+        }
+        if(!$request->valor == null){
+            $auxilio->valor = $request->valor;
+        }
+        if(!$request->quantidade == null){
+            $auxilio->quantidade = $request->quantidade;
+        }
 
             $solicitacao->save();
+            $auxilio->save();
     }
 
     public function deleteSolicitacao(Request $request, $id){
@@ -108,7 +146,9 @@ class SolicitacoesController extends Controller
         $botao = $request->input('submit');
 
         if($botao){
-            Solicitacao::destroy($id);
+            $solicitacao = Solicitacao::findOrFail($id);
+            $solicitacao->auxilio()->delete();
+            $solicitacao->delete();
         }
         return redirect()->back();
     }

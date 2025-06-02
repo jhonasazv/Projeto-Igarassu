@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\EntregasController;
 use App\Http\Controllers\SolicitacoesController;
 use App\Http\Controllers\SolicitantesController;
+use App\Models\Auxilio;
 use App\Models\Solicitacao;
 use App\Models\Solicitante;
 use App\Models\User;
@@ -27,12 +28,12 @@ Route::get('/teste/{id}', function ($id) {
     //$teste = Solicitacao::create(['texto' => 'pastel meio meh']);
     $user = User::findOrFail($id);
 
-   return view('teste', ['user' => $user]);
+   return $user;
 });
 
-Route::patch('/teste/{id}', function (Request $request, $id) {
+Route::get('/teste', function (Request $request) {
     
-        $user = Solicitacao::findOrFail($id);
+        /*$user = Solicitacao::findOrFail($id);
 
         $request->validate([
             'email' => 'nullable|string|max:150',
@@ -51,14 +52,40 @@ Route::patch('/teste/{id}', function (Request $request, $id) {
 
         if(!$request->name == null){
             $user->name = $request->name;
-        }
-
+        } 
+        $user->save();
+        return $ser2->email;
         
 
-            $user->save();
-        return $ser2->email;
-   
-})->name('test');
+        $Solicitante = Solicitante::create([
+            
+            'nis' => '55555555555',
+            'cpf' => '55555555555',
+            'nome' => 'sim',
+            'sexo' => 'm',
+            'endereco' => 'eita',
+            'cep' => '11111111',
+        ]);
+        
+       $Solicitacao = new Solicitacao([
+            'texto' => 'textoTeste2'//!!!!!!!!
+        ]);*/
+        $id = Auth::user()->id;
+        $user = User::find($id);
+
+        $Solicitante = new Solicitante([
+            
+            'nis' => '55555555555',
+            'cpf' => '55555555555',
+            'nome' => 'simmm',
+            'sexo' => 'm',
+            'endereco' => 'eita',
+            'cep' => '11111111',
+        ]);
+
+        $user->Solicitantes()->save($Solicitante);
+
+})->name('test')->middleware('auth:web');
 
 //////////////////
 
@@ -110,6 +137,7 @@ Route::middleware(['auth:admin'])->group(function () {  // ROTAS DE ADM
     Route::get('/admin-dashboard/entregas/{id}', [EntregasController::class, 'umaEntrega'])->name('umaEntrega');
 
     Route::patch('/admin-dashboard/entregas/{id}', [EntregasController::class, 'umaEntregaAutorizar'])->name('autorizarEntrega');
+    //problema - ID aponta para solicitacao nao entrega
 
     Route::get('/admin-dashboard/entregas/{id}/organizar-entrega', [EntregasController::class, 'mostrarCadastroEntrega'])->name('organizarEntrega');
 

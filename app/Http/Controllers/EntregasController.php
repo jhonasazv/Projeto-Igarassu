@@ -76,41 +76,16 @@ class EntregasController extends Controller
     public function cadastroEntrega(Request $request){//TESTAR
 
         $request->validate([
-            'nome' => 'required|string|max:100',
-            'descricao' => 'required|string|max:100',
-            'valor' => 'required|numeric|min:0',
-            'quantidade' => 'required|integer|max:20',
-            
             'numero' => 'required|integer|min:0',
             'data_entrega' => 'required|date',
             'descricao' => 'required|string|max:150',
         ]);
- 
-        auxilio::create([
-            'nome' => $request->nome,
-            'descricao' => $request->descricao,
-            'valor' => $request->valor,
-            'quantidade' => $request->quantidade,
-        ]);
-
-        /*DB::tables('auxilios')->insert([
-            'nome' => $request->nome,
-            'descricao' => $request->descricao,
-            'valor' => $request->valor,
-            'quantidade' => $request->quantidade,
-        ]);*/
 
         Entrega::create([
             'numero' => $request->numero,
             'data_entrega' => $request->data_entrega,
             'descricao' => $request->descricao,
         ]);
-
-        /*DB::tables('entregas')->insert([
-            'numero' => $request->numero,
-            'data_entrega' => $request->data_entrega,
-            'descricao' => $request->descricao,
-        ]);*/
     }
 
     public function updateEntrega(Request $request, $id){
