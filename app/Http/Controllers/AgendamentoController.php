@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 
 class AgendamentoController extends Controller
 {
-    public function mostrarAgenda(){
+    public function mostrarAgendaForm(){
 
         inertia::render('?');
     }
@@ -22,10 +22,23 @@ class AgendamentoController extends Controller
 
         $valido = $request->validate([
             'descricao' => 'required|string|max:150',
-            //'situacao' => 'required|string|max:15|in:deferido,indeferido'
         ]);
 
         Agendamento::create($valido);
+    }
+
+    public function mostrarAgendamentos(){
+
+        $agendamentos = Agendamento::orderBy('created_at', 'asc')->get();
+
+        inertia::render('?', ['agendamentos' => $agendamentos]);
+    }
+
+    public function umAgendamento($id){
+
+        $agendamento = Agendamento::findOrfail($id);
+
+        inertia::render('?', ['agendamento' => $agendamento]);
     }
 
     public function updateAgendamento(Request $request, $id){

@@ -17,11 +17,7 @@ class SolicitacoesController extends Controller
 {
     public function mostrarSolicitacao(){
 
-        //$solicitante = DB::table('solicitantes')->orderBy('created_at', 'desc')->get('nome');
-
         $solicitante = Solicitante::orderBy('created_at', 'asc')->get();
-
-        //$solicitacoes = DB::table('solicitacoes')->orderBy('created_at', 'desc')->get(['id', 'resultado', 'data_solicitacao']);
 
         $solicitacoes = Solicitacao::orderBy('created_at', 'asc')->get();
 
@@ -44,16 +40,19 @@ class SolicitacoesController extends Controller
             'quantidade' => 'required|integer',
         ]);
 
-        Solicitacao::create([
+        $solicitacao = Solicitacao::create([
             'texto' => $request->texto//!!!!!!!!
         ]);
         
-        Solicitacao::create([
+        $auxilio = new Auxilio([
             'nome' => $request->nome,
             'descricao' => $request->descricao,
             'valor' => $request->valor,
             'quantidade' => $request->quantidade,
         ]);
+
+        $solicitacao->auxilio()->save($auxilio);
+        
     }
 
     public function umaSolicitacao($id){

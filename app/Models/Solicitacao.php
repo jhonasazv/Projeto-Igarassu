@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Solicitacao extends Model
@@ -49,8 +50,8 @@ class Solicitacao extends Model
         return $this->belongsTo(solicitante::class);
     }
 
-    public function entrega(): HasMany{
+    public function entrega(): HasOne{
 
-       return $this->HasMany(Entrega::class, 'solicitacao_id');
+       return $this->hasOne(Entrega::class, 'solicitacao_id');
     }
 }

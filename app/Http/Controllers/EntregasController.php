@@ -46,7 +46,7 @@ class EntregasController extends Controller
 
         //$entrega = DB::table('entregas')->where('solicitacao_id', $id)->first();
 
-        $entrega = Entrega::findOrFail($id);
+        $entrega = Solicitacao::findOrFail($id)->entrega;
 
         if(!$entrega){
 
@@ -73,19 +73,23 @@ class EntregasController extends Controller
         inertia::render('?');
     }
 
-    public function cadastroEntrega(Request $request){//TESTAR
+    public function cadastroEntrega(Request $request, $id){//TESTAR
 
-        $request->validate([
+        $solicitacao = Solicitacao::findOrFail($id);
+
+        $valido = $request->validate([
             'numero' => 'required|integer|min:0',
             'data_entrega' => 'required|date',
             'descricao' => 'required|string|max:150',
         ]);
 
-        Entrega::create([
+        $entrega = new Entrega([
             'numero' => $request->numero,
             'data_entrega' => $request->data_entrega,
             'descricao' => $request->descricao,
         ]);
+
+        $solicitacao->entrega()->save($entrega);
     }
 
     public function updateEntrega(Request $request, $id){

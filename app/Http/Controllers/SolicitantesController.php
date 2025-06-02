@@ -34,6 +34,9 @@ class SolicitantesController extends Controller
 
     public function solicitantesForm(Request $request){
 
+        $id = Auth::user()->id;
+        $user = User::find($id);
+
        $validos = $request->validate([
             'nis' => 'required|string|size:11|unique',
             'cpf' => 'required|string|size:11|unique',
@@ -43,7 +46,9 @@ class SolicitantesController extends Controller
             'cep' => 'required|string|size:8',
         ]);
 
-        Solicitante::create($validos);
+        $solicitante = new Solicitante($validos);
+
+        $user->solicitantes()->save($solicitante);
         
         /*DB::tables('solicitantes')->insert([
             'nis' => $request->nis,
