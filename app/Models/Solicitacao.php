@@ -24,6 +24,16 @@ class Solicitacao extends Model
         'texto',
     ];
 
+        /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array<string>|bool
+     */
+    protected $guarded = [
+        'usuario_id',
+        'solicitante_id'
+    ];
+
     /**
      * The primary key associated with the table.
      *
@@ -50,8 +60,13 @@ class Solicitacao extends Model
         return $this->belongsTo(solicitante::class);
     }
 
-    public function entrega(): HasOne{
+    public function entrega(): HasOne{// AS ENTREGAS SAO 1,1??
 
        return $this->hasOne(Entrega::class, 'solicitacao_id');
+    }
+
+    public function auxilio(): HasOne{
+
+       return $this->hasOne(Auxilio::class, 'solicitacao_id');
     }
 }

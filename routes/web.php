@@ -27,13 +27,10 @@ Route::get('/agendamento', [AgendamentoController::class, 'mostrarAgendaForm'])
 Route::post('/agendamento', [AgendamentoController::class, 'agendaForm'])
     ->name('agendamentoForm');
 
-Route::get('/teste/{id}', function ($id) {
-    
-    //$teste = Solicitacao::create(['texto' => 'pastel meio meh']);
+/* Route::get('/teste/{id}', function ($id) {
     $user = User::findOrFail($id);
-
    return $user;
-});
+}); */
 
 Route::get('/teste', function (Request $request) {
     
@@ -102,58 +99,63 @@ Route::middleware(['auth:web', /*'verified'*/])->group(function () { // ROTAS AS
 
     //Solicitantes
     Route::get('/dashboard/beneficiarios', [SolicitantesController::class, 'mostrarSolicitantes'])
-        ->name('beneficiarios');
+        ->name('mostrarSolicitantes');
 
     Route::get('/dashboard/beneficiarios/cadastrar-beneficiario', [SolicitantesController::class, 'mostrarSolicitantesForm'])
-        ->name('cadastrarBeneficiarioGet');
+        ->name('mostrarSolicitantesForm');
 
     Route::post('/dashboard/beneficiarios/cadastrar-beneficiario', [SolicitantesController::class, 'solicitantesForm'])
-        ->name('cadastrarBeneficiarioPost');
+        ->name('solicitantesForm');
 
     Route::get('/dashboard/beneficiarios/{id}', [SolicitantesController::class, 'umSolicitante'])
-        ->name('beneficiarioPage');//NAO SEI SE TEM NO pROJETO
+        ->name('umSolicitante');//NAO SEI SE TEM NO PROJETO
 
     Route::patch('/dashboard/beneficiarios/{id}', [SolicitantesController::class, 'updateSolicitante'])
-        ->name('beneficiarioPage');
+        ->name('updateSolicitante');
 
     Route::delete('/dashboard/beneficiarios/{id}', [SolicitantesController::class, 'deleteSolicitantes'])
-        ->name('beneficiarioPage');
+        ->name('deleteSolicitantes');
 
 
     //Agendamentos
     Route::get('/dashboard/agendamentos', [AgendamentoController::class, 'mostrarAgendamentos'])
-        ->name('cadastrarBeneficiarioGet');
+        ->name('mostrarAgendamentos');
 
     Route::get('/dashboard/agendamentos/{id}', [AgendamentoController::class, 'umAgendamento'])
-        ->name('cadastrarBeneficiarioGet');
+        ->name('umAgendamento');
 
     Route::patch('/dashboard/agendamentos/{id}', [AgendamentoController::class, 'updateAgendamento'])
-        ->name('cadastrarBeneficiarioGet');
+        ->name('updateAgendamento');
 
     Route::delete('/dashboard/agendamentos/{id}', [AgendamentoController::class, 'deleteAgendamento'])
-        ->name('cadastrarBeneficiarioGet');
+        ->name('deleteAgendamento');
 
+
+
+    /***ERRO, SEM ID***
+    Route::get('/dashboard/solicitacoes/criar-solicitacao', [SolicitacoesController::class, 'mostrarSolicitacaoForm'])
+        ->name('criarSolicitacaoGet');      
+     Route::post('/dashboard/solicitacoes/criar-solicitacao', [SolicitacoesController::class, 'solicitacaoForm'])
+        ->name('criarSolicitacaoPost'); */
 
     //Solicitacao
     Route::get('/dashboard/solicitacoes', [SolicitacoesController::class, 'mostrarSolicitacao'])
-        ->name('solicitacoes');
+        ->name('mostrarSolicitacao');
 
-    Route::get('/dashboard/solicitacoes/criar-solicitacao', [SolicitacoesController::class, 'mostrarSolicitacaoForm'])
-        ->name('criarSolicitacaoGet');
+    Route::get('/dashboard/beneficiarios/{id}/criar-solicitacao', [SolicitacoesController::class, 'mostrarSolicitacaoForm'])
+        ->name('mostrarSolicitacaoForm');
 
-    Route::post('/dashboard/solicitacoes/criar-solicitacao', [SolicitacoesController::class, 'solicitacaoForm'])
-        ->name('criarSolicitacaoPost');
+    Route::post('/dashboard/beneficiarios/{id}/criar-solicitacao', [SolicitacoesController::class, 'solicitacaoForm'])
+        ->name('solicitacaoForm');
 
     Route::get('/dashboard/solicitacoes/{id}', [SolicitacoesController::class, 'umaSolicitacao'])
-        ->name('solicitacaoPage');
+        ->name('umaSolicitacao');
 
     Route::patch('/dashboard/solicitacoes/{id}', [SolicitacoesController::class, 'updateSolicitacao'])
-        ->name('solicitacaoPage');
+        ->name('updateSolicitacao');
 
     Route::delete('/dashboard/solicitacoes/{id}', [SolicitacoesController::class, 'deleteSolicitacao'])
-        ->name('solicitacaoPage');
-
-    //Route::get('/dashboard/teste', [SolicitantesController::class, 'mostrarSolicitantes'])->name('teste');//TESTE////////////////
+        ->name('deleteSolicitacao');
 
 });
 
@@ -161,24 +163,24 @@ Route::middleware(['auth:admin'])->group(function () {  // ROTAS DE ADM
 
     //Solicitacoes
     Route::get('/admin-dashboard/solicitacoes-pendentes', [AnaliseController::class, 'motrarSolicitacoesADM'])
-        ->name('solicitacoesPendentes');
+        ->name('motrarSolicitacoesADM');
 
     Route::get('/admin-dashboard/solicitacoes-pendentes/{id}', [AnaliseController::class, 'mostrarAnalise'])
-        ->name('umaAnalise');
+        ->name('mostrarAnalise');
 
     Route::patch('/admin-dashboard/solicitacoes-pendentes/{id}', [AnaliseController::class, 'analiseForm'])
-        ->name('umaAnaliseForm');
+        ->name('analiseForm');
 
 
     //Entregas
     Route::get('/admin-dashboard/entregas', [EntregasController::class, 'mostrarEntregas'])
-        ->name('entregas');
+        ->name('mostrarEntregas');
 
     Route::get('/admin-dashboard/entregas/{id}', [EntregasController::class, 'umaEntrega'])
         ->name('umaEntrega');
 
     Route::patch('/admin-dashboard/entregas/{id}', [EntregasController::class, 'umaEntregaAutorizar'])
-        ->name('autorizarEntrega');
+        ->name('umaEntregaAutorizar');
 
     Route::patch('/admin-dashboard/entregas/{id}', [EntregasController::class, 'updateEntrega'])
         ->name('updateEntrega');
@@ -187,21 +189,21 @@ Route::middleware(['auth:admin'])->group(function () {  // ROTAS DE ADM
         ->name('deleteEntrega');
 
     Route::get('/admin-dashboard/entregas/{id}/organizar-entrega', [EntregasController::class, 'mostrarCadastroEntrega'])
-        ->name('organizarEntrega');
+        ->name('mostrarCadastroEntrega');
 
     Route::post('/admin-dashboard/entregas/{id}/organizar-entrega', [EntregasController::class, 'cadastroEntrega'])
-        ->name('organizarEntregaForm');
+        ->name('cadastroEntrega');
 
 
     //Usuarios
     Route::get('/admin-dashboard/usuarios', [EntregasController::class, 'mostrarUsers'])
-        ->name('usuarios');
+        ->name('mostrarUsers');
 
     Route::patch('/admin-dashboard/usuarios', [EntregasController::class, 'updateUsers'])
-        ->name('updateUsuarios');
+        ->name('updateUsers');
 
     Route::delete('/admin-dashboard/usuarios', [EntregasController::class, 'deleteUsers'])
-        ->name('deleteUsuarios');
+        ->name('deleteUsers');
 
 });
 

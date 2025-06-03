@@ -29,19 +29,21 @@ class SolicitacoesController extends Controller
         return inertia::render('?');
     }
 
-    public function solicitacaoForm(Request $request){
+    public function solicitacaoForm(Request $request, $id){
+
+        $solicitante = Solicitante::findOrFail($id);
         
         $request->validate([
             'texto' => 'required|string|max:320',
 
             'nome' => 'required|string|max:100',
             'descricao' => 'required|string|max:320',
-            'valor' => 'required|numeric|min:0',
+            'valor' => 'required|decimal:2|min:0',
             'quantidade' => 'required|integer',
         ]);
 
-        $solicitacao = Solicitacao::create([
-            'texto' => $request->texto//!!!!!!!!
+        $solicitacao = new Solicitacao([
+            'texto' => $request->texto
         ]);
         
         $auxilio = new Auxilio([
@@ -51,17 +53,14 @@ class SolicitacoesController extends Controller
             'quantidade' => $request->quantidade,
         ]);
 
+        $solicitante->solicitacoes()->save($solicitacao);
         $solicitacao->auxilio()->save($auxilio);
         
     }
 
     public function umaSolicitacao($id){
 
-        //$solicitacao = DB::table('solicitacoes')->where('id', $id)->first(['data_solicitacao', 'data_deferido', 'resultado', 'texto', 'id', 'usuario_id']);
-
         $solicitacao = Solicitacao::findOrFail($id);
-
-        //$assistente = DB::table('users')->where('id', $solicitacao->usuario_id)->first(['nome']);/////////ver se ta certo
 
         $assistente = Solicitacao::findOrFail($id)->user;
 
@@ -80,7 +79,7 @@ class SolicitacoesController extends Controller
 
             'nome' => 'nullable|string|max:100',
             'descricao' => 'nullable|string|max:100',
-            'valor' => 'nullable|numeric|min:0',
+            'valor' => 'nullable|decimal:2|min:0',
             'quantidade' => 'nullable|integer',
         ]);
 

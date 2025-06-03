@@ -22,6 +22,16 @@ class Agendamento extends Model
         'descricao',
     ];
 
+        /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array<string>|bool
+     */
+    protected $guarded = [
+        'usuario_id',
+        'solicitante_id'
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'usuario_id');

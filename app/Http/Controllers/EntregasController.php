@@ -83,11 +83,7 @@ class EntregasController extends Controller
             'descricao' => 'required|string|max:150',
         ]);
 
-        $entrega = new Entrega([
-            'numero' => $request->numero,
-            'data_entrega' => $request->data_entrega,
-            'descricao' => $request->descricao,
-        ]);
+        $entrega = new Entrega($valido);
 
         $solicitacao->entrega()->save($entrega);
     }

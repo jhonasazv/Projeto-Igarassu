@@ -23,6 +23,15 @@ class Entrega extends Model
         'situacao',
     ];
 
+        /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array<string>|bool
+     */
+    protected $guarded = [
+        'solicitacao_id'
+    ];
+
     public function solicitacao(): BelongsTo
     {
         return $this->belongsTo(solicitacao::class, 'solicitacao_id');
