@@ -36,4 +36,9 @@ class Agendamento extends Model
     {
         return $this->belongsTo(User::class, 'usuario_id');
     }
+
+    public function solicitante(): BelongsTo
+    {
+        return $this->belongsTo(Solicitante::class);
+    }
 }

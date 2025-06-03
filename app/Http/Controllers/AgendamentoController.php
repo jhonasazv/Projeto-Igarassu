@@ -18,7 +18,7 @@ class AgendamentoController extends Controller
         inertia::render('?');
     }
 
-    public function agendaForm(Request $request){
+    public function agendaForm(Request $request){//relacao decidida no update
 
         $valido = $request->validate([
             'descricao' => 'required|string|max:150',
@@ -67,23 +67,23 @@ class AgendamentoController extends Controller
 
 
 
-        if(!$request->descricao == null){
+        if($request->descricao){
             $agendamento->descricao = $request->descricao;
         }
 
-        if(!$request->situacao == null){
+        if($request->situacao){
             $agendamento->situacao = $request->situacao;
         }
 
-        if(!$request->data_agendamento == null){
+        if($request->data_agendamento){
             $agendamento->data_agendamento = $request->data_agendamento;
         }
 
-        if(!$request->solicitante_id == null){
+        if($request->solicitante_id){
             $agendamento->solicitante_id = $request->solicitante_id;
         }
 
-        if(!$request->usuario_id == null){
+        if($request->usuario_id){
             $agendamento->usuario_id = $request->usuario_id;
         }
     }

@@ -109,23 +109,23 @@ class EntregasController extends Controller
 
 
 
-        if(!$request->numero == null){
+        if($request->numero){
             $entrega->numero = $request->numero;
         }
 
-        if(!$request->data_entrega == null){
+        if($request->data_entrega){
             $entrega->data_entrega = $request->data_entrega;
         }
 
-        if(!$request->descricao == null){
+        if($request->descricao){
             $entrega->descricao = $request->descricao;
         }
 
-        if(!$request->situacao == null){
+        if($request->situacao){
             $entrega->situacao = $request->situacao;
         }
 
-        if(!$request->solicitacao_id == null){
+        if($request->solicitacao_id){
             $entrega->solicitacao_id = $request->solicitacao_id;
         }
     }

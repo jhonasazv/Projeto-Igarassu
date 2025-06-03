@@ -102,36 +102,36 @@ class SolicitacoesController extends Controller
         
 
 
-        if(!$request->data_solicitacao == null){
+        if($request->data_solicitacao){
             $solicitacao->data_solicitacao = $request->data_solicitacao;
         }
-        if(!$request->data_deferido == null){
+        if($request->data_deferido){
             $solicitacao->data_deferido = $request->data_deferido;
         }
-        if(!$request->resultado == null){
+        if($request->resultado){
             $solicitacao->resultado = $request->resultado;
         }
-        if(!$request->texto == null){
+        if($request->texto){
             $solicitacao->texto = $request->texto;
         }
-        if(!$request->usuario_id == null){
+        if($request->usuario_id){
             $solicitacao->usuario_id = $request->usuario_id;
         }
-        if(!$request->auxilio_id == null){
+        if($request->auxilio_id){
             $solicitacao->auxilio_id = $request->auxilio_id;
         }
 
 
-        if(!$request->nome == null){
+        if($request->nome){
             $auxilio->nome = $request->nome;
         }
-        if(!$request->descricao == null){
+        if($request->descricao){
             $auxilio->descricao = $request->descricao;
         }
-        if(!$request->valor == null){
+        if($request->valor){
             $auxilio->valor = $request->valor;
         }
-        if(!$request->quantidade == null){
+        if($request->quantidade){
             $auxilio->quantidade = $request->quantidade;
         }
 

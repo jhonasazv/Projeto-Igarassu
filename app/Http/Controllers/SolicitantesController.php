@@ -62,8 +62,6 @@ class SolicitantesController extends Controller
     
     public function umSolicitante($id){////////Nao sei se tem////////
 
-        //$solicitante = DB::table('solicitantes')->where('id', $id)->first(['nome', 'email']);
-
         $solicitante = Solicitante::findOrFail($id);
 
         return inertia::render('?', ['solicitante' => $solicitante]);
@@ -92,31 +90,31 @@ class SolicitantesController extends Controller
 
         
 
-        if(!$request->nis == null){
+        if($request->nis){
             $solicitante->nis = $request->nis;
         }
 
-        if(!$request->cpf == null){
+        if($request->cpf){
             $solicitante->cpf = $request->cpf;
         }
 
-        if(!$request->nome == null){
+        if($request->nome){
             $solicitante->nome = $request->nome;
         }
 
-        if(!$request->sexo == null){
+        if($request->sexo){
             $solicitante->sexo = $request->sexo;
         }
 
-        if(!$request->endereco == null){
+        if($request->endereco){
             $solicitante->endereco = $request->endereco;
         }
 
-        if(!$request->cep == null){
+        if($request->cep){
             $solicitante->cep = $request->cep;
         }
 
-        if(!$request->usuario_id == null){
+        if($request->usuario_id){
             $solicitante->usuario_id = $request->usuario_id;
         }
             $solicitante->save();

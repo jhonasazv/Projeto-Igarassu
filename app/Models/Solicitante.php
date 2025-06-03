@@ -45,4 +45,9 @@ class Solicitante extends Model
 
        return $this->HasMany(solicitacao::class);
     }
+
+    public function agendamentos(): HasMany{
+
+       return $this->HasMany(Agendamento::class);
+    }
 }
