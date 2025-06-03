@@ -16,11 +16,7 @@ class EntregasController extends Controller
 {
     public function mostrarEntregas(){
 
-        //$solicitacoes = DB::table('solicitacoes')->orderBy('created_at', 'desc')->get(['id', 'resultado', 'data_solicitacao']);
-
         $solicitacoes = Solicitacao::orderBy('created_at', 'asc')->get();
-
-        //$assistente = DB::table('users')->orderBy('created_at', 'desc')->get('nome');
 
         $assistente = User::orderBy('created_at', 'asc')->get();
 
@@ -29,11 +25,7 @@ class EntregasController extends Controller
 
     public function umaEntrega($id){
 
-        //$solicitacao = DB::table('solicitacoes')->where('id', $id)->first(['data_solicitacao', 'data_deferido', 'resultado', 'texto', 'id', 'usuario_id']);
-
         $solicitacao = Solicitacao::findOrFail($id);
-
-        //$assistente = DB::table('users')->where('id', $solicitacao->usuario_id)->first(['nome']);
 
         $assistente = Solicitacao::findOrFail($id)->user;
 
@@ -43,8 +35,6 @@ class EntregasController extends Controller
     public function umaEntregaAutorizar(Request $request, $id){//NAO SEI SE ESTA PEGANDO
 
         $botao = $request->input('action');
-
-        //$entrega = DB::table('entregas')->where('solicitacao_id', $id)->first();
 
         $entrega = Solicitacao::findOrFail($id)->entrega;
 
@@ -60,7 +50,6 @@ class EntregasController extends Controller
 
         if($botao == 'autorizar'){
 
-            //DB::table('entregas')->where('solicitacao_id', $id)->update(['situacao' => '1']);   
             $entrega->situacao = 1;
             $entrega->save();
 
@@ -102,7 +91,7 @@ class EntregasController extends Controller
 
         $solicitacao = Solicitacao::find($request->usuario_id);
 
-        if (!$solicitacao and $request->solicitacao_id) {
+        if (!$solicitacao and $request->solicitacao_id) {//garante que solicitacao existe
             
             return redirect()->back()->with('erro', 'não existe essa solicitacao no sistema');
         }

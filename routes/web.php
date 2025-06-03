@@ -15,26 +15,14 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
-
-Route::get('/', function () {//////////////////rotas sem login
-    return Inertia::render('?');
-})->name('home');
-
-
-Route::get('/agendamento', [AgendamentoController::class, 'mostrarAgendaForm'])
-    ->name('agendamento');
-
-Route::post('/agendamento', [AgendamentoController::class, 'agendaForm'])
-    ->name('agendamentoForm');
-
 /* Route::get('/teste/{id}', function ($id) {
     $user = User::findOrFail($id);
    return $user;
 }); */
 
-Route::get('/teste', function (Request $request) {
+/*Route::get('/teste', function (Request $request) {
     
-        /*$user = Solicitacao::findOrFail($id);
+        $user = Solicitacao::findOrFail($id);
 
         $request->validate([
             'email' => 'nullable|string|max:150',
@@ -70,7 +58,7 @@ Route::get('/teste', function (Request $request) {
         
        $Solicitacao = new Solicitacao([
             'texto' => 'textoTeste2'//!!!!!!!!
-        ]);*/
+        ]);
         $id = Auth::user()->id;
         $user = User::find($id);
 
@@ -86,9 +74,19 @@ Route::get('/teste', function (Request $request) {
 
         $user->Solicitantes()->save($Solicitante);
 
-})->name('test')->middleware('auth:web');
+})->name('test')->middleware('auth:web');*/
 
-//////////////////
+
+Route::get('/', function () {//////////////////rotas sem login
+    return Inertia::render('?');
+})->name('home');
+
+Route::get('/agendamento', [AgendamentoController::class, 'mostrarAgendaForm'])
+    ->name('agendamento');
+
+Route::post('/agendamento', [AgendamentoController::class, 'agendaForm'])
+    ->name('agendamentoForm');
+
 
 Route::middleware(['auth:web', /*'verified'*/])->group(function () { // ROTAS ASSISTENTE
     
@@ -199,10 +197,13 @@ Route::middleware(['auth:admin'])->group(function () {  // ROTAS DE ADM
     Route::get('/admin-dashboard/usuarios', [EntregasController::class, 'mostrarUsers'])
         ->name('mostrarUsers');
 
-    Route::patch('/admin-dashboard/usuarios', [EntregasController::class, 'updateUsers'])
+    Route::get('/admin-dashboard/usuarios/{id}', [EntregasController::class, 'umUser'])
+        ->name('umUser');
+
+    Route::patch('/admin-dashboard/usuarios/{id}', [EntregasController::class, 'updateUsers'])
         ->name('updateUsers');
 
-    Route::delete('/admin-dashboard/usuarios', [EntregasController::class, 'deleteUsers'])
+    Route::delete('/admin-dashboard/usuarios/{id}', [EntregasController::class, 'deleteUsers'])
         ->name('deleteUsers');
 
 });

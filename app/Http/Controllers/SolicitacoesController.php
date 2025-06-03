@@ -90,12 +90,12 @@ class SolicitacoesController extends Controller
         $userFK = User::find($request->usuario_id);
         $auxilioFK = Auxilio::find($request->auxilio_id);
 
-        if (!$userFK and $request->usuario_id) {
+        if (!$userFK and $request->usuario_id) {//garante que o user existe
             
             return redirect()->back()->with('erro', 'não existe esse usuario no sistema');
         }
 
-        if (!$auxilioFK and $request->auxilio_id) {
+        if (!$auxilioFK and $request->auxilio_id) {//garante que o auxilio existe
             
             return redirect()->back()->with('erro', 'não existe o ID desse auxilio no sistema');
         }

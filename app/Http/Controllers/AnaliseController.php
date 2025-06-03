@@ -15,29 +15,20 @@ use Illuminate\Support\Facades\Auth;
 class AnaliseController extends Controller
 {
     public function motrarSolicitacoesADM(){
-
-        //$solicitacoes = DB::table('solicitacoes')->orderBy('created_at', 'desc')->get(['id', 'resultado', 'data_solicitacao']);
         $solicitacoes = Solicitacao::orderBy('created_at', 'asc')->get();
 
-        //$solicitante = DB::table('solicitantes')->orderBy('created_at', 'desc')->get('nome');
         $solicitante = Solicitante::orderBy('created_at', 'asc')->get();
 
-        //$totalSolicitacoes = DB::table('solicitacoes')->count();
         $totalSolicitacoes = Solicitacao::count();
 
-        //$Pendentes = DB::table('solicitacoes')->whereNull('resultado')->count();
         $Pendentes = Solicitacao::whereNull('resultado')->count();
 
-        //$totalEntrega = DB::table('entregas')->count();
         $totalEntrega = Entrega::count();
 
-        //$indeferidos = DB::table('solicitacoes')->where('resultado', 'false')->count();
         $indeferidos = Solicitacao::where('resultado', 'false')->count();
 
-        //$deferidos = DB::table('solicitacoes')->where('resultado', 'true')->count();
         $deferidos = Solicitacao::where('resultado', 'true')->count();
 
-        //$entregues = DB::table('entregas')->where('situacao', '0')->count();
         $entregues = Entrega::where('situacao', '1')->count();
         
 
@@ -53,12 +44,10 @@ class AnaliseController extends Controller
         ]);
     }
 
-    public function mostrarAnalise($id){//abortar quando for o id errado
+    public function mostrarAnalise($id){
 
-        //$solicitacao = DB::table('solicitacoes')->where('id', $id)->first(['data_solicitacao', 'data_deferido', 'resultado', 'texto', 'id', 'usuario_id']);
         $solicitacao = Solicitacao::findOrFail($id);
 
-        //$assistente = DB::table('users')->where('id', $solicitacao->usuario_id)->first(['nome']);
         $assistente = Solicitacao::findOrFail($id)->user;
 
         inertia::render('?', ['solicitacao' => $solicitacao, 'assistente' => $assistente]);
@@ -72,7 +61,6 @@ class AnaliseController extends Controller
         
         if ($botao == 'deferir') {
 
-            //DB::table('solicitacoes')->where('id', $id)->update(['resultado' => 'true']);
             $solicitacao->resultado = 'true';
             $solicitacao->save();
             
@@ -81,7 +69,6 @@ class AnaliseController extends Controller
 
         if ($botao == 'indeferir') {
 
-            //DB::table('solicitacoes')->where('id', $id)->update(['resultado' => 'false']); 
             $solicitacao->resultado = 'false';
             $solicitacao->save();
             

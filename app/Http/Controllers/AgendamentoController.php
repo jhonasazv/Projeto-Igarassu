@@ -57,11 +57,13 @@ class AgendamentoController extends Controller
 
         $solicitante = Solicitante::find($request->solicitante_id);
 
-        if (!$user and $request->usuario_id) {
+        if (!$user and $request->usuario_id) {//garante que o user existe
+            
             return redirect()->back()->with('erro', 'não existe esse usuario no sistema');
         }
 
-        if (!$solicitante and $request->solicitante_id) {
+        if (!$solicitante and $request->solicitante_id) {//garante que o user existe
+            
             return redirect()->back()->with('erro', 'não existe esse solicitante no sistema');
         }
 

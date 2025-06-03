@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Auth;
 class SolicitantesController extends Controller
 {
     public function mostrarSolicitantes(){
-        //DB::table('solicitantes')->orderBy('created_at')->get(['nome', 'cpf', 'sexo', 'nis', 'cep']);
 
         $solicitantes = Solicitante::orderBy('created_at')->get();
 
@@ -21,13 +20,6 @@ class SolicitantesController extends Controller
     }
 
     public function mostrarSolicitantesForm(){
-
-        /* $user = Auth::user();
-        $email = $user->email;
-
-        $assistenteId = DB::table('users')->where('email', $email)->get(['name', 'email']);
-
-        session('idAssistente', $assistenteId); */
 
         return inertia::render('?');
      }
@@ -49,18 +41,9 @@ class SolicitantesController extends Controller
         $solicitante = new Solicitante($validos);
 
         $user->solicitantes()->save($solicitante);
-        
-        /*DB::tables('solicitantes')->insert([
-            'nis' => $request->nis,
-            'cpf' => $request->cpf,
-            'nome' => $request->nome,
-            'sexo' => $request->sexo,
-            'endereco' => $request->endereco,
-            'cep' => $request->cep,
-        ]);*/
     }
     
-    public function umSolicitante($id){////////Nao sei se tem////////
+    public function umSolicitante($id){
 
         $solicitante = Solicitante::findOrFail($id);
 
@@ -83,7 +66,7 @@ class SolicitantesController extends Controller
 
         $user = User::find($request->usuario_id);
 
-        if (!$user and $request->usuario_id) {
+        if (!$user and $request->usuario_id) {//garante que o user existe
             
             return redirect()->back()->with('erro', 'não existe esse usuario no sistema');
         }

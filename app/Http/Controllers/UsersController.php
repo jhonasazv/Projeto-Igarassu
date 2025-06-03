@@ -15,12 +15,14 @@ class UsersController extends Controller
 {
     public function mostrarUsers(){
         
-        //$user = DB::table('users')->orderBy('name', 'asc')->get(['email', 'nome', 'tipo', 'id']);
-
         $user = User::orderBy('name', 'asc')->get();
 
-
         inertia::render('?', ['user' => $user]);
+    }
+
+    public function umUser(){
+
+        inertia::render('?');
     }
 
     public function updateUsers(Request $request, $id){
@@ -34,19 +36,19 @@ class UsersController extends Controller
             'tipo' => 'required|string|max:15|in:assistente,administrador',
         ]);
 
-        if(!$request->email == null){
+        if($request->email){
             $user->email = $request->email;
         }
 
-        if(!$request->name == null){
+        if($request->name){
             $user->name = $request->name;
         }
 
-        if(!$request->password == null){
+        if($request->password){
             $user->password = Hash::make($request->password);
         }
 
-        if(!$request->tipo == null){
+        if($request->tipo){
             $user->tipo = $request->tipo;
         }
             $user->save();
