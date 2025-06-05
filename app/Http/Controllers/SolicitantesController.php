@@ -26,7 +26,7 @@ class SolicitantesController extends Controller
 
     public function solicitantesForm(Request $request){
 
-        //$id = Auth::user()->id;
+        $id = Auth::user()->id;
         $user = User::find(1);
 
        $validos = $request->validate([
