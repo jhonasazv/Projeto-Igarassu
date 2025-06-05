@@ -17,21 +17,31 @@ class SolicitacoesController extends Controller
 {
     public function mostrarSolicitacao(){
 
-        $solicitante = Solicitante::orderBy('created_at', 'asc')->get();
+        //$solicitante = Solicitante::orderBy('created_at', 'asc')->get();
 
-        $solicitacoes = Solicitacao::orderBy('created_at', 'asc')->get();
+        //$solicitacoes = Solicitacao::orderBy('created_at', 'asc')->get();
 
-        return inertia::render('?', ['solicitante' => $solicitante, 'solicitacoes', $solicitacoes]);
+        $solicitante = Solicitante::has('solicitacoes')->with('solicitacoes')->get();
+
+        $solicitacoes = $solicitante->pluck('solicitacoes')->flatten();
+
+        
+
+        return view('mostrarSolicitacao', ['solicitante' => $solicitante, 'solicitacoes' => $solicitacoes]);
     }
 
-    public function mostrarSolicitacaoForm(){
+    public function mostrarSolicitacaoForm($id){
 
-        return inertia::render('?');
+        $solicitante = Solicitante::findOrFail($id);
+        return view('mostrarSolicitacaoForm', ['solicitante' => $solicitante]);
     }
 
     public function solicitacaoForm(Request $request, $id){
 
         $solicitante = Solicitante::findOrFail($id);
+
+        
+        $user = User::find(1);
         
         $request->validate([
             'texto' => 'required|string|max:320',
@@ -53,8 +63,15 @@ class SolicitacoesController extends Controller
             'quantidade' => $request->quantidade,
         ]);
 
-        $solicitante->solicitacoes()->save($solicitacao);
+        $solicitacao->user()->associate($user);
+        $solicitacao->solicitante()->associate($solicitante);
+        $solicitacao->save();  
         $solicitacao->auxilio()->save($auxilio);
+
+        return [
+    'auxilio' => $auxilio,
+    'solicitacao' => $solicitacao,
+];
         
     }
 
@@ -62,9 +79,11 @@ class SolicitacoesController extends Controller
 
         $solicitacao = Solicitacao::findOrFail($id);
 
-        $assistente = Solicitacao::findOrFail($id)->user;
+        $assistente = $solicitacao->user;
 
-        return inertia::render('?', ['solicitacao' => $solicitacao, 'assistente' => $assistente]);
+        $solicitante = $solicitacao->solicitante;
+
+        return view('umaSolicitacao', ['solicitacao' => $solicitacao, 'assistente' => $assistente, 'solicitante' => $solicitante]);
     }
 
     public function updateSolicitacao(Request $request, $id){
@@ -75,8 +94,8 @@ class SolicitacoesController extends Controller
             'resultado' => 'nullable|boolean',
             'texto' => 'nullable|string|max:320',
             'usuario_id' => 'nullable|integer|min:1',
-            'auxilio_id' => 'nullable|integer|min:1',
-
+            
+            'solicitacao_id' => 'nullable|integer|min:1',  
             'nome' => 'nullable|string|max:100',
             'descricao' => 'nullable|string|max:100',
             'valor' => 'nullable|decimal:2|min:0',
@@ -86,6 +105,8 @@ class SolicitacoesController extends Controller
         $solicitacao = Solicitacao::findOrFail($id);
 
         $auxilio = Solicitacao::findOrFail($id)->auxilio;
+
+        return $auxilio;
 
         $userFK = User::find($request->usuario_id);
         $auxilioFK = Auxilio::find($request->auxilio_id);
@@ -117,11 +138,11 @@ class SolicitacoesController extends Controller
         if($request->usuario_id){
             $solicitacao->usuario_id = $request->usuario_id;
         }
-        if($request->auxilio_id){
-            $solicitacao->auxilio_id = $request->auxilio_id;
+        
+
+        if($request->solicitacao_id){
+            $auxilio->solicitacao_id = $request->solicitacao_id;
         }
-
-
         if($request->nome){
             $auxilio->nome = $request->nome;
         }
@@ -137,6 +158,7 @@ class SolicitacoesController extends Controller
 
             $solicitacao->save();
             $auxilio->save();
+            return $solicitacao + $auxilio;
     }
 
     public function deleteSolicitacao(Request $request, $id){

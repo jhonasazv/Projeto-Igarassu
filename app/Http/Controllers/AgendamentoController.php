@@ -15,7 +15,7 @@ class AgendamentoController extends Controller
 {
     public function mostrarAgendaForm(){
 
-        inertia::render('?');
+       return view('mostrarAgendamentoForm');
     }
 
     public function agendaForm(Request $request){//relacao decidida no update
@@ -24,21 +24,21 @@ class AgendamentoController extends Controller
             'descricao' => 'required|string|max:150',
         ]);
 
-        Agendamento::create($valido);
+        return Agendamento::create($valido);
     }
 
     public function mostrarAgendamentos(){
 
         $agendamentos = Agendamento::orderBy('created_at', 'asc')->get();
 
-        inertia::render('?', ['agendamentos' => $agendamentos]);
+        return view('mostrarAgendamentos', ['agendamentos' => $agendamentos]);
     }
 
     public function umAgendamento($id){
 
         $agendamento = Agendamento::findOrfail($id);
 
-        inertia::render('?', ['agendamento' => $agendamento]);
+        return view('umAgendamento', ['agendamento' => $agendamento]);
     }
 
     public function updateAgendamento(Request $request, $id){
@@ -59,12 +59,12 @@ class AgendamentoController extends Controller
 
         if (!$user and $request->usuario_id) {//garante que o user existe
             
-            return redirect()->back()->with('erro', 'não existe esse usuario no sistema');
+            return 'não existe esse usuario no sistema';
         }
 
         if (!$solicitante and $request->solicitante_id) {//garante que o user existe
             
-            return redirect()->back()->with('erro', 'não existe esse solicitante no sistema');
+            return 'não existe esse solicitante no sistema';
         }
 
 
@@ -88,6 +88,9 @@ class AgendamentoController extends Controller
         if($request->usuario_id){
             $agendamento->usuario_id = $request->usuario_id;
         }
+
+        $agendamento->save();
+        return $agendamento;
     }
 
     public function deleteAgendamento(Request $request, $id){

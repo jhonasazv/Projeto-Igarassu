@@ -16,38 +16,40 @@ class SolicitantesController extends Controller
 
         $solicitantes = Solicitante::orderBy('created_at')->get();
 
-        return inertia::render('?', ['solicitantes' => $solicitantes]);
+        return view('mostrarSolicitantes', ['solicitantes' => $solicitantes]);
     }
 
     public function mostrarSolicitantesForm(){
 
-        return inertia::render('?');
+        return view('solicitantesForm');
      }
 
     public function solicitantesForm(Request $request){
 
-        $id = Auth::user()->id;
-        $user = User::find($id);
+        //$id = Auth::user()->id;
+        $user = User::find(1);
 
        $validos = $request->validate([
-            'nis' => 'required|string|size:11|unique',
-            'cpf' => 'required|string|size:11|unique',
+            'nis' => 'required|string||unique:solicitantes,nis',
+            'cpf' => 'required|string||unique:solicitantes,cpf',
             'nome' => 'required|string|max:100',
             'sexo' => 'required|string|size:1',
             'endereco' => 'required|string|max:150',
-            'cep' => 'required|string|size:8',
+            'cep' => 'required|string|',
         ]);
 
         $solicitante = new Solicitante($validos);
 
         $user->solicitantes()->save($solicitante);
+
+        return $solicitante;
     }
     
     public function umSolicitante($id){
 
         $solicitante = Solicitante::findOrFail($id);
 
-        return inertia::render('?', ['solicitante' => $solicitante]);
+        return view('umSolicitante', ['solicitante' => $solicitante]);
     }
 
     public function updateSolicitante(Request $request, $id){
@@ -68,7 +70,7 @@ class SolicitantesController extends Controller
 
         if (!$user and $request->usuario_id) {//garante que o user existe
             
-            return redirect()->back()->with('erro', 'não existe esse usuario no sistema');
+            return 'não existe esse usuario no sistema';
         }
 
         
@@ -101,6 +103,7 @@ class SolicitantesController extends Controller
             $solicitante->usuario_id = $request->usuario_id;
         }
             $solicitante->save();
+            return $solicitante;
     }
 
     public function deleteSolicitantes(Request $request, $id){
@@ -110,6 +113,6 @@ class SolicitantesController extends Controller
         if($botao){
             Solicitante::destroy($id);
         }
-        return redirect()->back();
+        return redirect()->route('mostrarSolicitantes');
     }
 }

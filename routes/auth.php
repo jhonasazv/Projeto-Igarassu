@@ -29,9 +29,12 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store'); /**/
+
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+        ->name('logout');
 });
 
-Route::middleware('auth:web')->group(function () {
+Route::middleware('guest')->group(function () {
     /* Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
@@ -48,17 +51,14 @@ Route::middleware('auth:web')->group(function () {
 
     Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']); */
 
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-        ->name('logout');
+    
 });
 
-Route::middleware('auth:admin')->group(function () {
+Route::middleware('guest')->group(function () {
 
     Route::get('/admin-dashboard/usuarios/cadastro', [RegisteredUserController::class, 'create'])
         ->name('register');
 
     Route::post('admin-dashboard/usuarios/cadastro', [RegisteredUserController::class, 'store']);
 
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-        ->name('logout');
 });

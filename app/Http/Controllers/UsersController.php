@@ -15,14 +15,15 @@ class UsersController extends Controller
 {
     public function mostrarUsers(){
         
-        $user = User::orderBy('name', 'asc')->get();
-
-        inertia::render('?', ['user' => $user]);
+        $users = User::orderBy('name', 'asc')->get();
+        
+        return view('mostrarUsers', ['users' => $users]);
     }
 
-    public function umUser(){
-
-        inertia::render('?');
+    public function umUser($id){
+        
+        $user = User::findOrFail($id);
+        return view('umUser', ['user' => $user]);
     }
 
     public function updateUsers(Request $request, $id){
@@ -32,8 +33,8 @@ class UsersController extends Controller
         $request->validate([
             'email' => 'nullable|string|max:150',
             'name' => 'nullable|string|max:150',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'tipo' => 'required|string|max:15|in:assistente,administrador',
+            'password' => ['nullable', Rules\Password::defaults()],
+            'tipo' => 'nullable|string|max:15|in:assistente,administrador',
         ]);
 
         if($request->email){
@@ -52,12 +53,13 @@ class UsersController extends Controller
             $user->tipo = $request->tipo;
         }
             $user->save();
+            return $user;
     }
 
     public function deleteUsers(Request $request, $id){
 
         $botao = $request->input('submit');
-
+        
         if($botao){
             $botao = User::destroy($id);
         }

@@ -16,9 +16,9 @@ class AuthenticatedSessionController extends Controller
     /**
      * Show the login page.
      */
-    public function create(Request $request): Response
+    public function create(Request $request)
     {
-        return Inertia::render('auth/login', [
+        return view('login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => $request->session()->get('status'),
         ]);
@@ -36,11 +36,11 @@ class AuthenticatedSessionController extends Controller
 
         if (Auth::guard('admin')->check()) {
 
-            return Inertia::location(route('admindashboard'));
+            return redirect()->route('dashboardAdm');
 
         }elseif (Auth::guard('web')->check()) {
 
-            return Inertia::location(route('dashboard'));
+            return redirect()->route('dashboard');
         }
         return redirect('/');
     }
@@ -48,7 +48,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request)
     {
         Auth::guard('web')->logout();
         Auth::guard('admin')->logout();
@@ -56,6 +56,8 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        
+
+        return redirect('/agendamentos');
     }
 }
