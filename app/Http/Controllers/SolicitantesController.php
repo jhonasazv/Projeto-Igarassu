@@ -64,9 +64,9 @@ class SolicitantesController extends Controller
 
         $solicitante = Solicitante::findOrFail($id);
 
-        $user = User::find($request->usuario_id);
+        $userFk = User::find($request->usuario_id);
 
-        if (!$user and $request->usuario_id) {//garante que o user existe
+        if (!$userFk and $request->usuario_id) {//garante que o user existe
             
             return redirect()->back()->with('erro', 'não existe esse usuario no sistema');
         }
@@ -109,7 +109,8 @@ class SolicitantesController extends Controller
 
         if($botao){
             Solicitante::destroy($id);
+            return redirect()->route('?');
         }
-        return redirect()->back();
+        
     }
 }

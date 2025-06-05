@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\EntregasController;
 use App\Http\Controllers\SolicitacoesController;
 use App\Http\Controllers\SolicitantesController;
+use App\Http\Controllers\UsersController;
 use App\Models\Auxilio;
 use App\Models\Solicitacao;
 use App\Models\Solicitante;
@@ -15,70 +16,9 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
-/* Route::get('/teste/{id}', function ($id) {
-    $user = User::findOrFail($id);
-   return $user;
-}); */
-
-/*Route::get('/teste', function (Request $request) {
-    
-        $user = Solicitacao::findOrFail($id);
-
-        $request->validate([
-            'email' => 'nullable|string|max:150',
-            'name' => 'nullable|string|max:150',
-            'usuario_id' => 'nullable|integer|size:4'
-        ]);
-
-        $ser2 = User::find($request->usuario_id);
-        if ($request->usuario_id) {
-            return 'p7orraraa';
-        }
-
-        if($request->email){
-            $user->email = $request->email;
-        }
-
-        if(!$request->name == null){
-            $user->name = $request->name;
-        } 
-        $user->save();
-        return $ser2->email;
-        
-
-        $Solicitante = Solicitante::create([
-            
-            'nis' => '55555555555',
-            'cpf' => '55555555555',
-            'nome' => 'sim',
-            'sexo' => 'm',
-            'endereco' => 'eita',
-            'cep' => '11111111',
-        ]);
-        
-       $Solicitacao = new Solicitacao([
-            'texto' => 'textoTeste2'//!!!!!!!!
-        ]);
-        $id = Auth::user()->id;
-        $user = User::find($id);
-
-        $Solicitante = new Solicitante([
-            
-            'nis' => '55555555555',
-            'cpf' => '55555555555',
-            'nome' => 'simmm',
-            'sexo' => 'm',
-            'endereco' => 'eita',
-            'cep' => '11111111',
-        ]);
-
-        $user->Solicitantes()->save($Solicitante);
-
-})->name('test')->middleware('auth:web');*/
-
 
 Route::get('/', function () {//////////////////rotas sem login
-    return Inertia::render('?');
+    return Inertia::render('welcome');
 })->name('home');
 
 Route::get('/agendamento', [AgendamentoController::class, 'mostrarAgendaForm'])
@@ -89,11 +29,6 @@ Route::post('/agendamento', [AgendamentoController::class, 'agendaForm'])
 
 
 Route::middleware(['auth:web', /*'verified'*/])->group(function () { // ROTAS ASSISTENTE
-    
-    Route::get('/dashboard', function () {///// ROTA TESTE
-         return Inertia::render('dashboard');
-    })->name('dashboard');
-
 
     //Solicitantes
     Route::get('/dashboard/beneficiarios', [SolicitantesController::class, 'mostrarSolicitantes'])
@@ -128,13 +63,7 @@ Route::middleware(['auth:web', /*'verified'*/])->group(function () { // ROTAS AS
     Route::delete('/dashboard/agendamentos/{id}', [AgendamentoController::class, 'deleteAgendamento'])
         ->name('deleteAgendamento');
 
-
-
-    /***ERRO, SEM ID***
-    Route::get('/dashboard/solicitacoes/criar-solicitacao', [SolicitacoesController::class, 'mostrarSolicitacaoForm'])
-        ->name('criarSolicitacaoGet');      
-     Route::post('/dashboard/solicitacoes/criar-solicitacao', [SolicitacoesController::class, 'solicitacaoForm'])
-        ->name('criarSolicitacaoPost'); */
+        
 
     //Solicitacao
     Route::get('/dashboard/solicitacoes', [SolicitacoesController::class, 'mostrarSolicitacao'])
@@ -194,16 +123,16 @@ Route::middleware(['auth:admin'])->group(function () {  // ROTAS DE ADM
 
 
     //Usuarios
-    Route::get('/admin-dashboard/usuarios', [EntregasController::class, 'mostrarUsers'])
+    Route::get('/admin-dashboard/usuarios', [UsersController::class, 'mostrarUsers'])
         ->name('mostrarUsers');
 
-    Route::get('/admin-dashboard/usuarios/{id}', [EntregasController::class, 'umUser'])
+    Route::get('/admin-dashboard/usuarios/{id}', [UsersController::class, 'umUser'])
         ->name('umUser');
 
-    Route::patch('/admin-dashboard/usuarios/{id}', [EntregasController::class, 'updateUsers'])
+    Route::patch('/admin-dashboard/usuarios/{id}', [UsersController::class, 'updateUsers'])
         ->name('updateUsers');
 
-    Route::delete('/admin-dashboard/usuarios/{id}', [EntregasController::class, 'deleteUsers'])
+    Route::delete('/admin-dashboard/usuarios/{id}', [UsersController::class, 'deleteUsers'])
         ->name('deleteUsers');
 
 });

@@ -17,21 +17,25 @@ class SolicitacoesController extends Controller
 {
     public function mostrarSolicitacao(){
 
-        $solicitante = Solicitante::orderBy('created_at', 'asc')->get();
+        $solicitante = Solicitante::has('solicitacoes')->with('solicitacoes')->get();
 
-        $solicitacoes = Solicitacao::orderBy('created_at', 'asc')->get();
+        $solicitacoes = $solicitante->pluck('solicitacoes')->flatten();
 
         return inertia::render('?', ['solicitante' => $solicitante, 'solicitacoes', $solicitacoes]);
     }
 
-    public function mostrarSolicitacaoForm(){
+    public function mostrarSolicitacaoForm($id){
 
-        return inertia::render('?');
+        $solicitante = Solicitante::findOrFail($id);
+        return inertia::render('?', ['solicitante' => $solicitante]);
     }
 
     public function solicitacaoForm(Request $request, $id){
 
         $solicitante = Solicitante::findOrFail($id);
+
+        $userId = Auth::user()->id;
+        $user = User::find($userId);
         
         $request->validate([
             'texto' => 'required|string|max:320',
@@ -53,7 +57,9 @@ class SolicitacoesController extends Controller
             'quantidade' => $request->quantidade,
         ]);
 
-        $solicitante->solicitacoes()->save($solicitacao);
+        $solicitacao->user()->associate($user);
+        $solicitacao->solicitante()->associate($solicitante);
+        $solicitacao->save();  
         $solicitacao->auxilio()->save($auxilio);
         
     }
@@ -62,9 +68,11 @@ class SolicitacoesController extends Controller
 
         $solicitacao = Solicitacao::findOrFail($id);
 
-        $assistente = Solicitacao::findOrFail($id)->user;
+        $assistente = $solicitacao->user;
 
-        return inertia::render('?', ['solicitacao' => $solicitacao, 'assistente' => $assistente]);
+        $solicitante = $solicitacao->solicitante;
+
+        return inertia::render('?', ['solicitacao' => $solicitacao, 'assistente' => $assistente, 'solicitante' => $solicitante]);
     }
 
     public function updateSolicitacao(Request $request, $id){
@@ -75,8 +83,8 @@ class SolicitacoesController extends Controller
             'resultado' => 'nullable|boolean',
             'texto' => 'nullable|string|max:320',
             'usuario_id' => 'nullable|integer|min:1',
-            'auxilio_id' => 'nullable|integer|min:1',
 
+            'solicitacao_id' => 'nullable|integer|min:1',  
             'nome' => 'nullable|string|max:100',
             'descricao' => 'nullable|string|max:100',
             'valor' => 'nullable|decimal:2|min:0',
@@ -117,11 +125,11 @@ class SolicitacoesController extends Controller
         if($request->usuario_id){
             $solicitacao->usuario_id = $request->usuario_id;
         }
-        if($request->auxilio_id){
-            $solicitacao->auxilio_id = $request->auxilio_id;
+
+
+         if($request->solicitacao_id){
+            $auxilio->solicitacao_id = $request->solicitacao_id;
         }
-
-
         if($request->nome){
             $auxilio->nome = $request->nome;
         }
@@ -147,7 +155,8 @@ class SolicitacoesController extends Controller
             $solicitacao = Solicitacao::findOrFail($id);
             $solicitacao->auxilio()->delete();
             $solicitacao->delete();
+            return redirect()->route('?');
         }
-        return redirect()->back();
+        
     }
 }

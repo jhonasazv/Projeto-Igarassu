@@ -53,16 +53,16 @@ class AgendamentoController extends Controller
 
         $agendamento = Agendamento::findOrFail($id);
 
-        $user = User::find($request->usuario_id);
+        $userFK = User::find($request->usuario_id);
 
-        $solicitante = Solicitante::find($request->solicitante_id);
+        $solicitanteFK = Solicitante::find($request->solicitante_id);
 
-        if (!$user and $request->usuario_id) {//garante que o user existe
+        if (!$userFK and $request->usuario_id) {//garante que o user existe
             
             return redirect()->back()->with('erro', 'não existe esse usuario no sistema');
         }
 
-        if (!$solicitante and $request->solicitante_id) {//garante que o user existe
+        if (!$solicitanteFK and $request->solicitante_id) {//garante que o user existe
             
             return redirect()->back()->with('erro', 'não existe esse solicitante no sistema');
         }
@@ -88,6 +88,7 @@ class AgendamentoController extends Controller
         if($request->usuario_id){
             $agendamento->usuario_id = $request->usuario_id;
         }
+         $agendamento->save();
     }
 
     public function deleteAgendamento(Request $request, $id){
@@ -96,8 +97,7 @@ class AgendamentoController extends Controller
 
         if($botao){
             Agendamento::destroy($id);
+            return redirect()->route('?');
         }
-        return redirect()->back();
     }
-
 }

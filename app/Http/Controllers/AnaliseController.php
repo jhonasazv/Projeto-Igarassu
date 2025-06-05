@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Auth;
 class AnaliseController extends Controller
 {
     public function motrarSolicitacoesADM(){
-        $solicitacoes = Solicitacao::orderBy('created_at', 'asc')->get();
+        $solicitante = Solicitante::has('solicitacoes')->with('solicitacoes')->get();
 
-        $solicitante = Solicitante::orderBy('created_at', 'asc')->get();
+        $solicitacoes = $solicitante->pluck('solicitacoes')->flatten();
 
         $totalSolicitacoes = Solicitacao::count();
 
@@ -25,9 +25,9 @@ class AnaliseController extends Controller
 
         $totalEntrega = Entrega::count();
 
-        $indeferidos = Solicitacao::where('resultado', 'false')->count();
+        $indeferidos = Solicitacao::where('resultado', '0')->count();
 
-        $deferidos = Solicitacao::where('resultado', 'true')->count();
+        $deferidos = Solicitacao::where('resultado', '1')->count();
 
         $entregues = Entrega::where('situacao', '1')->count();
         
@@ -48,9 +48,11 @@ class AnaliseController extends Controller
 
         $solicitacao = Solicitacao::findOrFail($id);
 
-        $assistente = Solicitacao::findOrFail($id)->user;
+        $assistente = $solicitacao->user;
 
-        inertia::render('?', ['solicitacao' => $solicitacao, 'assistente' => $assistente]);
+        $solicitante = $solicitacao->solicitante;
+
+        inertia::render('?', ['solicitacao' => $solicitacao, 'assistente' => $assistente, 'solicitante' => $solicitante]);
     }
 
     public function analiseForm(Request $request, $id){
@@ -61,7 +63,7 @@ class AnaliseController extends Controller
         
         if ($botao == 'deferir') {
 
-            $solicitacao->resultado = 'true';
+            $solicitacao->resultado = '1';
             $solicitacao->save();
             
             return redirect()->back()->with('sucesso', 'deferimento confirmado');
@@ -69,7 +71,7 @@ class AnaliseController extends Controller
 
         if ($botao == 'indeferir') {
 
-            $solicitacao->resultado = 'false';
+            $solicitacao->resultado = '0';
             $solicitacao->save();
             
             return redirect()->back()->with('sucesso', 'indeferimento confirmado');

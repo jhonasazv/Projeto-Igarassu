@@ -20,9 +20,10 @@ class UsersController extends Controller
         inertia::render('?', ['user' => $user]);
     }
 
-    public function umUser(){
+    public function umUser($id){
 
-        inertia::render('?');
+        $user = User::findOrFail($id);
+        inertia::render('?', ['user' => $user]);
     }
 
     public function updateUsers(Request $request, $id){
@@ -32,8 +33,8 @@ class UsersController extends Controller
         $request->validate([
             'email' => 'nullable|string|max:150',
             'name' => 'nullable|string|max:150',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'tipo' => 'required|string|max:15|in:assistente,administrador',
+            'password' => ['nullable', Rules\Password::defaults()],
+            'tipo' => 'nullable|string|in:assistente,administrador',
         ]);
 
         if($request->email){
@@ -60,7 +61,8 @@ class UsersController extends Controller
 
         if($botao){
             $botao = User::destroy($id);
+            return redirect()->route('mostrarUsers');
         }
-        return redirect()->back();
+        
     }
 }

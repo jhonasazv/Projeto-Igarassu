@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\auxilio;
 use App\Models\Entrega;
 use App\Models\Solicitacao;
+use App\Models\Solicitante;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,20 +17,28 @@ class EntregasController extends Controller
 {
     public function mostrarEntregas(){
 
-        $solicitacoes = Solicitacao::orderBy('created_at', 'asc')->get();
+        $solicitantes = Solicitante::whereHas('solicitacoes', function ($query) {
+        $query->where('resultado', 1);
+        })->with(['solicitacoes' => function ($query) {
+        $query->where('resultado', 1);
+        }])->get();
 
-        $assistente = User::orderBy('created_at', 'asc')->get();
+        $solicitacoes = $solicitantes->pluck('solicitacoes')->flatten();
 
-        inertia::render('?', ['solicitacoes' => $solicitacoes, 'assistente' => $assistente]);
+        inertia::render('?', ['solicitacoes' => $solicitacoes, 'solicitantes' => $solicitantes]);
     }
 
     public function umaEntrega($id){
 
-        $solicitacao = Solicitacao::findOrFail($id);
+        $solicitacao = Solicitacao::with(['user', 'solicitante'])->findOrFail($id);
 
-        $assistente = Solicitacao::findOrFail($id)->user;
+        $assistente = $solicitacao->user;
+        $solicitante = $solicitacao->solicitante;
 
-        inertia::render('?', ['solicitacao' => $solicitacao, 'assistente' => $assistente]);
+        $entrega = $solicitacao->entrega;
+
+        inertia::render('?', ['solicitacao' => $solicitacao, 'assistente' => $assistente, 'solicitante' => $solicitante,
+        'entrega' => $entrega]);
     }
 
     public function umaEntregaAutorizar(Request $request, $id){//NAO SEI SE ESTA PEGANDO
@@ -57,9 +66,10 @@ class EntregasController extends Controller
         }
     }
 
-    public function mostrarCadastroEntrega(){
+    public function mostrarCadastroEntrega($id){
+         $solicitacao = Solicitacao::findOrFail($id);
 
-        inertia::render('?');
+        inertia::render('?', ['solicitacao' => $solicitacao]);
     }
 
     public function cadastroEntrega(Request $request, $id){//TESTAR
@@ -87,13 +97,16 @@ class EntregasController extends Controller
             'solicitacao_id' => 'nullable|integer|min:1'
         ]);
 
-        $entrega = Entrega::findOrFail($id);
+         $entrega = Solicitacao::findOrFail($id)->entrega;
 
-        $solicitacao = Solicitacao::find($request->usuario_id);
+        $solicitacaoFK = Solicitacao::find($request->usuario_id);
 
-        if (!$solicitacao and $request->solicitacao_id) {//garante que solicitacao existe
+        if (!$solicitacaoFK and $request->solicitacao_id) {//garante que solicitacao existe
             
             return redirect()->back()->with('erro', 'não existe essa solicitacao no sistema');
+        }
+        if (!$entrega) {
+        return redirect()->back()->with('erro', 'Entrega não encontrada para essa solicitação.');
         }
 
 
@@ -117,6 +130,7 @@ class EntregasController extends Controller
         if($request->solicitacao_id){
             $entrega->solicitacao_id = $request->solicitacao_id;
         }
+        $entrega->save();
     }
 
     public function deleteEntrega(Request $request, $id){
@@ -125,8 +139,9 @@ class EntregasController extends Controller
 
         if($botao){
             Entrega::destroy($id);
+            return redirect()->route('?');
         }
-        return redirect()->back();
+        
     }
 
 }    
