@@ -1,89 +1,141 @@
 <?php
 
-use App\Http\Controllers\administradorController;
-use App\Http\Controllers\assistenteController;
+use App\Http\Controllers\AgendamentoController;
+use App\Http\Controllers\AnaliseController;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\semLogincontroller;
+use App\Http\Controllers\EntregasController;
+use App\Http\Controllers\SolicitacoesController;
+use App\Http\Controllers\SolicitantesController;
+use App\Http\Controllers\UsersController;
+use App\Models\Auxilio;
+use App\Models\Solicitacao;
+use App\Models\Solicitante;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+
 
 Route::get('/', function () {//////////////////rotas sem login
     return Inertia::render('welcome');
 })->name('home');
 
-Route::get('/agendamento', [semLogincontroller::class, 'mostrarAgenda'])->name('agendamento');
+Route::get('/agendamento', [AgendamentoController::class, 'mostrarAgendaForm'])
+    ->name('agendamento');
 
-Route::post('/agendamento', [semLogincontroller::class, 'agendaForm'])->name('agendamentoForm');
+Route::post('/agendamento', [AgendamentoController::class, 'agendaForm'])
+    ->name('agendamentoForm');
 
-//////////////////
 
 Route::middleware(['auth:web', /*'verified'*/])->group(function () { // ROTAS ASSISTENTE
-    Route::get('/dashboard', function () {// ROTA TESTE
-         return Inertia::render('dashboard');
-    })->name('dashboard');
+
+    //Solicitantes
+    Route::get('/dashboard/beneficiarios', [SolicitantesController::class, 'mostrarSolicitantes'])
+        ->name('mostrarSolicitantes');
+
+    Route::get('/dashboard/beneficiarios/cadastrar-beneficiario', [SolicitantesController::class, 'mostrarSolicitantesForm'])
+        ->name('mostrarSolicitantesForm');
+
+    Route::post('/dashboard/beneficiarios/cadastrar-beneficiario', [SolicitantesController::class, 'solicitantesForm'])
+        ->name('solicitantesForm');
+
+    Route::get('/dashboard/beneficiarios/{id}', [SolicitantesController::class, 'umSolicitante'])
+        ->name('umSolicitante');//NAO SEI SE TEM NO PROJETO
+
+    Route::patch('/dashboard/beneficiarios/{id}', [SolicitantesController::class, 'updateSolicitante'])
+        ->name('updateSolicitante');
+
+    Route::delete('/dashboard/beneficiarios/{id}', [SolicitantesController::class, 'deleteSolicitantes'])
+        ->name('deleteSolicitantes');
 
 
-    Route::get('/dashboard/beneficiarios', [assistenteController::class, 'mostrarSolicitantes'])->name('beneficiarios');
+    //Agendamentos
+    Route::get('/dashboard/agendamentos', [AgendamentoController::class, 'mostrarAgendamentos'])
+        ->name('mostrarAgendamentos');
 
+    Route::get('/dashboard/agendamentos/{id}', [AgendamentoController::class, 'umAgendamento'])
+        ->name('umAgendamento');
 
-    Route::get('/dashboard/beneficiarios/cadastrar-beneficiario', [assistenteController::class, 'mostrarSolicitantesForm'])->name('cadastrarBeneficiarioGet');
+    Route::patch('/dashboard/agendamentos/{id}', [AgendamentoController::class, 'updateAgendamento'])
+        ->name('updateAgendamento');
 
-    Route::post('/dashboard/beneficiarios/cadastrar-beneficiario', [assistenteController::class, 'solicitantesForm'])->name('cadastrarBeneficiarioPost');
+    Route::delete('/dashboard/agendamentos/{id}', [AgendamentoController::class, 'deleteAgendamento'])
+        ->name('deleteAgendamento');
 
+        
 
-    Route::get('/dashboard/solicitacoes', [assistenteController::class, 'mostrarSolicitacao'])->name('solicitacoes');
+    //Solicitacao
+    Route::get('/dashboard/solicitacoes', [SolicitacoesController::class, 'mostrarSolicitacao'])
+        ->name('mostrarSolicitacao');
 
+    Route::get('/dashboard/beneficiarios/{id}/criar-solicitacao', [SolicitacoesController::class, 'mostrarSolicitacaoForm'])
+        ->name('mostrarSolicitacaoForm');
 
-    Route::get('/dashboard/solicitacoes/criar-solicitacao', [assistenteController::class, 'mostrarSolicitacaoForm'])->name('criarSolicitacaoGet');
+    Route::post('/dashboard/beneficiarios/{id}/criar-solicitacao', [SolicitacoesController::class, 'solicitacaoForm'])
+        ->name('solicitacaoForm');
 
-    Route::post('/dashboard/solicitacoes/criar-solicitacao', [assistenteController::class, 'solicitacaoForm'])->name('criarSolicitacaoPost');
+    Route::get('/dashboard/solicitacoes/{id}', [SolicitacoesController::class, 'umaSolicitacao'])
+        ->name('umaSolicitacao');
 
+    Route::patch('/dashboard/solicitacoes/{id}', [SolicitacoesController::class, 'updateSolicitacao'])
+        ->name('updateSolicitacao');
 
-    Route::get('/dashboard/beneficiarios/{id}', [assistenteController::class, 'umSolicitante'])->name('beneficiarioPage');//NAO SEI SE TEM NO pROJETO
-
-    Route::get('/dashboard/solicitacoes/{id}', [assistenteController::class, 'umaSolicitacao'])->name('solicitacaoPage');
-
-    //Route::get('/dashboard/teste', [assistenteController::class, 'mostrarSolicitantes'])->name('teste');//TESTE////////////////
+    Route::delete('/dashboard/solicitacoes/{id}', [SolicitacoesController::class, 'deleteSolicitacao'])
+        ->name('deleteSolicitacao');
 
 });
 
 Route::middleware(['auth:admin'])->group(function () {  // ROTAS DE ADM
-    /*Route::get('/admin-dashboard', function () {
-    return Inertia::render('AdminDashboard');
-    })->name('admindashboard');*/
 
-    Route::get('/admin-dashboard/solicitacoes-pendentes', [administradorController::class, 'motrarSolicitacoesADM'])->name('solicitacoesPendentes');
+    //Solicitacoes
+    Route::get('/admin-dashboard/solicitacoes-pendentes', [AnaliseController::class, 'motrarSolicitacoesADM'])
+        ->name('motrarSolicitacoesADM');
 
+    Route::get('/admin-dashboard/solicitacoes-pendentes/{id}', [AnaliseController::class, 'mostrarAnalise'])
+        ->name('mostrarAnalise');
 
-
-    Route::get('/admin-dashboard/solicitacoes-pendentes/{id}', [administradorController::class, 'mostrarAnalise'])->name('umaAnalise');
-
-    Route::post('/admin-dashboard/solicitacoes-pendentes/{id}', [administradorController::class, 'analiseForm'])->name('umaAnaliseForm');
-
+    Route::patch('/admin-dashboard/solicitacoes-pendentes/{id}', [AnaliseController::class, 'analiseForm'])
+        ->name('analiseForm');
 
 
-    Route::get('/admin-dashboard/entregas', [administradorController::class, 'mostrarEntregas'])->name('entregas');
+    //Entregas
+    Route::get('/admin-dashboard/entregas', [EntregasController::class, 'mostrarEntregas'])
+        ->name('mostrarEntregas');
+
+    Route::get('/admin-dashboard/entregas/{id}', [EntregasController::class, 'umaEntrega'])
+        ->name('umaEntrega');
+
+    Route::patch('/admin-dashboard/entregas/{id}', [EntregasController::class, 'umaEntregaAutorizar'])
+        ->name('umaEntregaAutorizar');
+
+    Route::patch('/admin-dashboard/entregas/{id}', [EntregasController::class, 'updateEntrega'])
+        ->name('updateEntrega');
+
+    Route::delete('/admin-dashboard/entregas/{id}', [EntregasController::class, 'deleteEntrega'])
+        ->name('deleteEntrega');
+
+    Route::get('/admin-dashboard/entregas/{id}/organizar-entrega', [EntregasController::class, 'mostrarCadastroEntrega'])
+        ->name('mostrarCadastroEntrega');
+
+    Route::post('/admin-dashboard/entregas/{id}/organizar-entrega', [EntregasController::class, 'cadastroEntrega'])
+        ->name('cadastroEntrega');
 
 
+    //Usuarios
+    Route::get('/admin-dashboard/usuarios', [UsersController::class, 'mostrarUsers'])
+        ->name('mostrarUsers');
 
-    Route::get('/admin-dashboard/entregas/{id}', [administradorController::class, 'umaEntrega'])->name('umaEntrega');
+    Route::get('/admin-dashboard/usuarios/{id}', [UsersController::class, 'umUser'])
+        ->name('umUser');
 
-    Route::post('/admin-dashboard/entregas/{id}', [administradorController::class, 'umaEntregaAutorizar'])->name('autorizarEntrega');
+    Route::patch('/admin-dashboard/usuarios/{id}', [UsersController::class, 'updateUsers'])
+        ->name('updateUsers');
 
-
-    //////////VERIFICAR COM PEDRO
-    Route::get('/admin-dashboard/entregas/{id}/organizar-entrega', [administradorController::class, 'mostrarCadastroEntrega'])->name('organizarEntrega');
-
-    Route::post('/admin-dashboard/entregas/{id}/organizar-entrega', [administradorController::class, 'cadastroEntrega'])->name('organizarEntregaForm');
-
-
-
-    Route::get('/admin-dashboard/usuarios', [administradorController::class, 'mostrarUsers'])->name('usuarios');
+    Route::delete('/admin-dashboard/usuarios/{id}', [UsersController::class, 'deleteUsers'])
+        ->name('deleteUsers');
 
 });
-
-//Route::get('/admin-dashboard', fn () => '<h1>Hello</h1>')->middleware('auth:admin')->name('admindashboard');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
